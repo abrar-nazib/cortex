@@ -1,0 +1,2 @@
+import tkthread
+tkthread.tkinstall()
