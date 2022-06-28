@@ -4,7 +4,7 @@ from types import NoneType
 import cv2
 import numpy as np
 
-CAMERANUMBER = 1
+CAMERANUMBER = 2
 TRACKBAR1 = 146
 TRACKBAR2 = 112
 AREA = 2500
