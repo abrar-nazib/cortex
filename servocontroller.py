@@ -11,7 +11,7 @@ for pin in servoPins:
 INITIALANGLES = [90, 210, 45]
 GRABANGLE = 162
 
-ANGLECORRECTIONS = [14, 2, 3]
+ANGLECORRECTIONS = [13, 2, 3]
 
 
 def map_range(x, in_min, in_max, out_min, out_max):

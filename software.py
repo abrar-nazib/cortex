@@ -55,7 +55,7 @@ def showFrame(frame):
 
 
 def SliderUpdate(var):
-    coordinateLabel['text'] = f'( {xSlider.get()} , {ySlider.get()} )'
+    coordinateLabel['text'] = f'Manual Coordinates: ( {xSlider.get()} , {ySlider.get()} )'
 
 
 def manualControl(var):
@@ -81,7 +81,7 @@ def autoPickPlace():
 
 
 def calculateActualPosition(objX, objY):
-    xx = (((13.75+11.95)/600)*objX)-13.7
+    xx = (((12+12)/600)*objX)-12
     yy = (19.2) - ((19.2)/600 * objY)
     yy = yy + 1.57
     return xx, yy
@@ -198,7 +198,43 @@ videoLabel = tk.Label(
     bg=BACKGROUND,
 )
 # videoLabel.grid(row=1, column=1)
-videoLabel.pack(fill='x', padx=20, pady=20)
+# videoLabel.pack(fill='x', padx=20, pady=20)
+videoLabel.place(x=600, y=70)
+
+
+backButton = tk.Button(
+    text="Back",
+    font=('Arial', 15),
+    relief=tk.RAISED,
+    bg=BACKGROUND,
+    fg=FONTCOLOR,
+    master=pickAndPlacePage,
+    width=50,
+    activebackground=FONTCOLOR,
+    activeforeground=BACKGROUND,
+    borderwidth=3,
+    command=lambda: showFrame(welcomePage)
+)
+# writingButton.grid(row=3, column=1)
+# writingButton.pack(fill='x')
+backButton.pack(pady=5, padx=10, side="bottom", anchor="w")
+
+placeButton = tk.Button(
+    text="Place",
+    font=('Arial', 15),
+    relief=tk.RAISED,
+    bg=BACKGROUND,
+    fg=FONTCOLOR,
+    master=pickAndPlacePage,
+    width=50,
+    activebackground=FONTCOLOR,
+    activeforeground=BACKGROUND,
+    borderwidth=3,
+    command=lambda: threading.Thread(target=placeObjectGUI).start()
+)
+# writingButton.grid(row=3, column=1)
+# writingButton.pack(fill='x')
+placeButton.pack(pady=2, padx=10, side="bottom", anchor="w")
 
 
 pickButton = tk.Button(
@@ -216,24 +252,7 @@ pickButton = tk.Button(
 )
 # writingButton.grid(row=3, column=1)
 # writingButton.pack(fill='x')
-pickButton.pack(pady=2)
-
-placeButton = tk.Button(
-    text="Place",
-    font=('Arial', 15),
-    relief=tk.RAISED,
-    bg=BACKGROUND,
-    fg=FONTCOLOR,
-    master=pickAndPlacePage,
-    width=50,
-    activebackground=FONTCOLOR,
-    activeforeground=BACKGROUND,
-    borderwidth=3,
-    command=lambda: threading.Thread(target=placeObjectGUI).start()
-)
-# writingButton.grid(row=3, column=1)
-# writingButton.pack(fill='x')
-placeButton.pack(pady=2)
+pickButton.pack(pady=2, padx=10, side="bottom", anchor="w")
 
 autoButton = tk.Button(
     text="Auto Mode",
@@ -250,24 +269,7 @@ autoButton = tk.Button(
 )
 # writingButton.grid(row=3, column=1)
 # writingButton.pack(fill='x')
-autoButton.pack(pady=2)
-
-backButton = tk.Button(
-    text="Back",
-    font=('Arial', 15),
-    relief=tk.RAISED,
-    bg=BACKGROUND,
-    fg=FONTCOLOR,
-    master=pickAndPlacePage,
-    width=50,
-    activebackground=FONTCOLOR,
-    activeforeground=BACKGROUND,
-    borderwidth=3,
-    command=lambda: showFrame(welcomePage)
-)
-# writingButton.grid(row=3, column=1)
-# writingButton.pack(fill='x')
-backButton.pack(pady=5)
+autoButton.pack(pady=2, padx=10, side="bottom", anchor="w")
 
 
 xSlider = tk.Scale(pickAndPlacePage, from_=-15, to=15,
@@ -288,11 +290,11 @@ ySliderLabel.place(x=10, y=155)
 
 coordinateLabel = tk.Label(pickAndPlacePage, text="( X , Y )",
                            background=BACKGROUND, foreground=FONTCOLOR, font=('Arial', 20))
-coordinateLabel.place(x=130, y=255)
+coordinateLabel.place(x=10, y=255)
 
 objectPositionLabel = tk.Label(pickAndPlacePage, text="( X , Y )",
                                background=BACKGROUND, foreground=FONTCOLOR, font=('Arial', 20))
-objectPositionLabel.place(x=70, y=355)
+objectPositionLabel.place(x=10, y=355)
 # -------------------------------- Manual Control Page --------------------------------------
 manualControlHeader = tk.Label(
     text="Manual Control",
@@ -310,7 +312,7 @@ feedLabel = tk.Label(
     bg=BACKGROUND,
 )
 # videoLabel.grid(row=1, column=1)
-feedLabel.place(x=600, y=100)
+feedLabel.place(x=600, y=70)
 
 backButton = tk.Button(
     text="Back",
@@ -327,7 +329,7 @@ backButton = tk.Button(
 )
 # writingButton.grid(row=3, column=1)
 # writingButton.pack(fill='x')
-backButton.pack(pady=5, side="bottom")
+backButton.pack(pady=5, padx=10, side="bottom", anchor="w")
 
 
 baseServoSlider = tk.Scale(manualControlPage, from_=0, to=180,
@@ -374,13 +376,13 @@ while True:
         OBJX, OBJY = calculateActualPosition(objX, objY)
     # print(f'x={objX}, y={objY}')
         objectPositionLabel.configure(
-            text=f"POS ( {round(OBJX, 2)}, {round(OBJY, 2)} )")
+            text=f"Object Detected At: ( {round(OBJX, 2)}, {round(OBJY, 2)} )")
     cv2image = cv2.cvtColor(cv2image, cv2.COLOR_BGR2RGB)
 
     # cv2image = cv2.rotate(cv2image, cv2.ROTATE_180)
     createGridLines(cv2image)
     img = Image.fromarray(cv2image)
-    img = img.resize((400, 400))
+    img = img.resize((650, 650))
 
     # Convert image to PhotoImage
     imgtk = ImageTk.PhotoImage(image=img)

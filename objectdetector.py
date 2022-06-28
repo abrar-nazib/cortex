@@ -4,9 +4,9 @@ from types import NoneType
 import cv2
 import numpy as np
 
-CAMERANUMBER = 2
-TRACKBAR1 = 252
-TRACKBAR2 = 50
+CAMERANUMBER = 1
+TRACKBAR1 = 146
+TRACKBAR2 = 112
 AREA = 2500
 
 POSX = None
@@ -53,7 +53,7 @@ def getPos():
 
 def crop(img):
     width, height = 600, 600
-    pts1 = np.float32([[108, 28], [591, 59], [91, 388], [565, 414]])
+    pts1 = np.float32([[140, 31], [592, 58], [124, 390], [566, 413]])
     pts2 = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
     matrix = cv2.getPerspectiveTransform(pts1, pts2)
     output = cv2.warpPerspective(img, matrix, (width, height))
@@ -122,22 +122,31 @@ cv2.createTrackbar("Area", "Parameters", AREA, 30000, empty)
 # while True:
 
 def getImageCoordinates():
+
     success, img = cap.read()
     img = cv2.flip(img, 0)
     img = cv2.flip(img, 1)
     img = crop(img)
     imgContour = img.copy()
-    imgBlur = cv2.GaussianBlur(img, (7, 7), 1)
-    imgGray = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2GRAY)
+    # imgBlur = cv2.GaussianBlur(img, (7, 7), 1)
+    # imgGray = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2GRAY)
     threshold1 = cv2.getTrackbarPos("Threshold1", "Parameters")
     threshold2 = cv2.getTrackbarPos("Threshold2", "Parameters")
-    imgCanny = cv2.Canny(imgGray, threshold1, threshold2)
+    # imgCanny = cv2.Canny(imgGray, threshold1, threshold2)
     # imgStack = stackImage(0.8,([img, imgCanny]))
-    kernel = np.ones((5, 5))
-    imgDil = cv2.dilate(imgCanny, kernel, iterations=1)
+    # kernel = np.ones((5, 5))
+    # imgDil = cv2.dilate(imgCanny, kernel, iterations=1)
     # objX, objY = getContours(imgDil, imgContour)
     # return imgContour, objX, objY
-    getContours(imgDil, imgContour)
+    lower_black = np.array([0, 0, 0])
+    upper_black = np.array([35, 55, 100])
+    # masking the HSV image to get only black colors
+    blackMask = cv2.inRange(img, lower_black, upper_black)
+    ##########################################################
+    lower_red = np.array([0, 100, 20])
+    upper_red = np.array([60, 255, 255])
+    redMask = cv2.inRange(img, lower_red, upper_red)
+    getContours(blackMask, imgContour)
     return imgContour
 #     cv2.imshow("Result", imgContour)
 #     cv2.setMouseCallback('Result', draw_circle)
@@ -152,17 +161,25 @@ if __name__ == "__main__":
         img = cv2.flip(img, 1)
         # img = crop(img)
         imgContour = img.copy()
-        imgBlur = cv2.GaussianBlur(img, (7, 7), 1)
-        imgGray = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2GRAY)
+        # imgBlur = cv2.GaussianBlur(img, (7, 7), 1)
+        # imgGray = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2GRAY)
         threshold1 = cv2.getTrackbarPos("Threshold1", "Parameters")
         threshold2 = cv2.getTrackbarPos("Threshold2", "Parameters")
-        imgCanny = cv2.Canny(imgGray, threshold1, threshold2)
+        # imgCanny = cv2.Canny(imgGray, threshold1, threshold2)
         # imgStack = stackImage(0.8,([img, imgCanny]))
-        kernel = np.ones((5, 5))
-        imgDil = cv2.dilate(imgCanny, kernel, iterations=1)
+        # kernel = np.ones((5, 5))
+        # imgDil = cv2.dilate(imgCanny, kernel, iterations=1)
         # objX, objY = getContours(imgDil, imgContour)
         # return imgContour, objX, objY
-        getContours(imgDil, imgContour)
+        lower_black = np.array([0, 0, 0])
+        upper_black = np.array([35, 55, 100])
+        # masking the HSV image to get only black colors
+        blackMask = cv2.inRange(img, lower_black, upper_black)
+        ##########################################################
+        lower_red = np.array([0, 100, 20])
+        upper_red = np.array([60, 255, 255])
+        redMask = cv2.inRange(img, lower_red, upper_red)
+        getContours(blackMask, imgContour)
         cv2.imshow("Result", imgContour)
         cv2.setMouseCallback('Result', draw_circle)
 
