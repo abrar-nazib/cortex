@@ -3,15 +3,20 @@ import time
 import math
 import coordinateconverter
 
-board = Arduino("COM5")
-
-servoPins = [9, 10, 11, 6]
-for pin in servoPins:
-    board.digital[pin].mode = SERVO
+PORT = "COM5"
 INITIALANGLES = [90, 210, 45]
 GRABANGLE = 162
-
 ANGLECORRECTIONS = [13, 2, 3]
+SERVOPINS = [9, 10, 11, 6]
+
+
+def connect(port):
+    global board
+    board = Arduino(port)
+    for pin in SERVOPINS:
+        board.digital[pin].mode = SERVO
+    sendData(INITIALANGLES[0], INITIALANGLES[1], INITIALANGLES[2])
+    releaseObject()
 
 
 def map_range(x, in_min, in_max, out_min, out_max):
@@ -24,23 +29,23 @@ def rotateServo(pin, angle):
 
 
 def sendData(servo1Angle, servo2Angle, servo3Angle):
-    rotateServo(servoPins[0], map_range(
+    rotateServo(SERVOPINS[0], map_range(
         (servo1Angle + ANGLECORRECTIONS[0]), 0, 180, 0, 153))
     if servo2Angle < 90:
         servo2Angle = 90
     if servo2Angle > 250:
         servo2Angle = 250
-    rotateServo(servoPins[1], map_range(
+    rotateServo(SERVOPINS[1], map_range(
         (servo2Angle - 90+ANGLECORRECTIONS[1]), 0, 180, 0, 153))
     if(servo3Angle < 45):
         servo3Angle = 45
-    rotateServo(servoPins[2], map_range(
+    rotateServo(SERVOPINS[2], map_range(
         (servo3Angle-45+ANGLECORRECTIONS[2]), 0, 180, 0, 160))
 
 
 def guiControl(servo1Angle, servo2Angle, servo3Angle, servo4Angle):
     sendData(servo1Angle, servo2Angle, servo3Angle)
-    rotateServo(servoPins[3], servo4Angle)
+    rotateServo(SERVOPINS[3], servo4Angle)
     # time.sleep(0.01)
 
 
@@ -112,19 +117,19 @@ def angleTest(servoPin):
 
 def grabObject():
     for i in range(120, GRABANGLE, 1):
-        rotateServo(servoPins[3], i)
+        rotateServo(SERVOPINS[3], i)
         time.sleep(0.03)
 
 
 def releaseObject():
     for i in range(GRABANGLE, 120, -1):
-        rotateServo(servoPins[3], i)
+        rotateServo(SERVOPINS[3], i)
         time.sleep(0.03)
 
 
 def pickObject(coordinates):
     # releaseObject()
-    rotateServo(servoPins[3], 120)
+    rotateServo(SERVOPINS[3], 120)
     targetAngles = coordinateconverter.convertCoordstoAngles(coordinates)
     # smoothAngleExecution(
     #     INITIALANGLES, targetAngles)
@@ -142,8 +147,11 @@ def placeObject(coordinates):
     up(targetAngles, INITIALANGLES)
 
 
-sendData(INITIALANGLES[0], INITIALANGLES[1], INITIALANGLES[2])
-releaseObject()
+try:
+    connect(PORT)
+except Exception as e:
+    board = None
+
 if(__name__ == "__main__"):
 
     # targetAngles = [116, 135, 59]
