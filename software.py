@@ -47,7 +47,17 @@ manualControlPage.grid(row=0, column=0, sticky="nsew")
 
 def createGridLines(img):
     # cv2.line(img, (54, 12), (22, 476), (0, 0, 0), 1)
-    pass
+    # pass
+    try:
+        xPix = int((xSlider.get() + 12) * (600/24))
+        yPix = int(600-(ySlider.get() * (600/19.2)))
+        cv2.rectangle(img, (xPix, yPix),
+                      (xPix+5, yPix+5), (0, 0, 120), thickness=10)
+        # print(f"done {xPix} {yPix}")
+    except Exception as e:
+        cv2.rectangle(img, (10, 10),
+                      (20, 20), (120, 0, 0), 2)
+        print(e)
 
 
 def showFrame(frame):

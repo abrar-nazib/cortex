@@ -4,7 +4,7 @@ from types import NoneType
 import cv2
 import numpy as np
 
-CAMERANUMBER = 0
+CAMERANUMBER = 2
 TRACKBAR1 = 146
 TRACKBAR2 = 112
 AREA = 2500
@@ -53,7 +53,7 @@ def getPos():
 
 def crop(img):
     width, height = 600, 600
-    pts1 = np.float32([[140, 31], [592, 58], [124, 390], [566, 413]])
+    pts1 = np.float32([[140, 36], [593, 54], [129, 396], [574, 411]])
     pts2 = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
     matrix = cv2.getPerspectiveTransform(pts1, pts2)
     output = cv2.warpPerspective(img, matrix, (width, height))
@@ -109,6 +109,8 @@ def empty(a):
 frameWidth = 600
 frameHeight = 600
 cap = cv2.VideoCapture(CAMERANUMBER, cv2.CAP_DSHOW)
+
+
 # cap.set(3, frameWidth)
 # cap.set(4, frameHeight)
 
@@ -140,12 +142,12 @@ def getImageCoordinates():
     # return imgContour, objX, objY
     lower_black = np.array([0, 0, 0])
     upper_black = np.array([35, 55, 100])
-    # masking the HSV image to get only black colors
+    # # masking the HSV image to get only black colors
     blackMask = cv2.inRange(img, lower_black, upper_black)
-    ##########################################################
-    lower_red = np.array([0, 100, 20])
-    upper_red = np.array([60, 255, 255])
-    redMask = cv2.inRange(img, lower_red, upper_red)
+    # ##########################################################
+    # lower_red = np.array([0, 100, 20])
+    # upper_red = np.array([60, 255, 255])
+    # redMask = cv2.inRange(img, lower_red, upper_red)
     getContours(blackMask, imgContour)
     return imgContour
 #     cv2.imshow("Result", imgContour)
