@@ -5,7 +5,7 @@ import coordinateconverter
 
 PORT = "COM5"
 INITIALANGLES = [90, 210, 45]
-GRABANGLE = 162
+GRABANGLE = 155
 ANGLECORRECTIONS = [13, 2, 3]
 SERVOPINS = [9, 10, 11, 6]
 
