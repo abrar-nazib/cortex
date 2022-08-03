@@ -1,11 +1,10 @@
 import guiframes
 import tkinter as tk
 import servocontroller
-from matplotlib.pyplot import xscale
 import threading
 import cv2
 from PIL import Image, ImageTk
-import objectdetector
+import test as objectdetector
 
 # import objectdetector
 

@@ -1,7 +1,7 @@
 import math
-baseArmLength = 6.95
+baseArmLength = 6.75
 shoulderArmLength = 10.4
-elbowArmLength = 15.4
+elbowArmLength = 15.8
 
 
 def convertCoordstoAngles(coordinate, Origin=[0, 0]):

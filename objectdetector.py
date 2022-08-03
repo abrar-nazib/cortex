@@ -53,7 +53,7 @@ def getPos():
 
 def crop(img):
     width, height = 600, 600
-    pts1 = np.float32([[140, 36], [593, 54], [129, 396], [574, 411]])
+    pts1 = np.float32([[144, 34], [596, 58], [129, 393], [573, 415]])
     pts2 = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
     matrix = cv2.getPerspectiveTransform(pts1, pts2)
     output = cv2.warpPerspective(img, matrix, (width, height))
