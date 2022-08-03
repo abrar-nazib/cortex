@@ -1,3 +1,4 @@
+from numpy import pad
 import guiframes
 import tkinter as tk
 import servocontroller
@@ -36,23 +37,43 @@ class Page(tk.Frame):
         self.grid(row=0, column=0, sticky="nsew")
 
 
-class Text(tk.Label):
+class TextLabel(tk.Label):
     def __init__(self, page, text, fontSize):
         super().__init__(
             page,
             fg=FONTCOLOR,
             text=text,
-            font=('Arial', fontSize), bg=BACKGROUND
+            font=('Arial', fontSize),
+            bg=BACKGROUND
         )
+
+
+class ImageLabel(tk.Label):
+    def __init__(self, page, location, size, bg=BACKGROUND):
+        imageRaw = Image.open(location)
+        imageRaw = imageRaw.resize(size)
+        self.image = ImageTk.PhotoImage(imageRaw)  # Avoid garbage collection
+        super().__init__(page, bg=BACKGROUND, image=self.image)
 
 
 class WelcomePage(Page):
     def __init__(self, master):
         super().__init__(master)
-        text = Text(self, (1, 2))
+
+        text = TextLabel(self, text="CORTEX", fontSize=40)
         text.pack(fill="x")
+
+        headingImage = ImageLabel(
+            self,
+            location="assets/brain.png",
+            size=(450, 450)
+        )
+        # headingImage.grid(row=1, column=1)
+        headingImage.pack(fill='x', pady=10)
 
 
 window = GUI()
 welcomePage = WelcomePage(window)
+
+
 window.mainloop()
