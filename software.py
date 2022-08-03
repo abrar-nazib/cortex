@@ -18,7 +18,6 @@ OBJY = None
 class GUI(tk.Tk):
     def __init__(self):
         super().__init__()  # Initiating Super Method
-        self.geometry("400x400")
         self.state("zoomed")
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
@@ -26,10 +25,34 @@ class GUI(tk.Tk):
         icon = tk.PhotoImage(file="assets/brain.png")
         self.iconphoto(True, icon)
         self.config(background=BACKGROUND)
-        self.mainloop()
+
+    def showPage(self, page):
+        page.tkraise()
 
 
-class CTX_Page
+class Page(tk.Frame):
+    def __init__(self, master):
+        super().__init__(master, bg=BACKGROUND)
+        self.grid(row=0, column=0, sticky="nsew")
+
+
+class Text(tk.Label):
+    def __init__(self, page, text, fontSize):
+        super().__init__(
+            page,
+            fg=FONTCOLOR,
+            text=text,
+            font=('Arial', fontSize), bg=BACKGROUND
+        )
+
+
+class WelcomePage(Page):
+    def __init__(self, master):
+        super().__init__(master)
+        text = Text(self, (1, 2))
+        text.pack(fill="x")
 
 
 window = GUI()
+welcomePage = WelcomePage(window)
+window.mainloop()

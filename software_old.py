@@ -18,6 +18,7 @@ FONTCOLOR = "#D6D5A8"
 OBJX = None
 OBJY = None
 
+
 # cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 window = tk.Tk()
 
