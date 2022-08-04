@@ -19,10 +19,11 @@ def connect(port):
             board.digital[pin].mode = SERVO
         sendData(INITIALANGLES[0], INITIALANGLES[1], INITIALANGLES[2])
         releaseObject()
-        return 1
+        return True
     except Exception as e:
         print(e)
-        return 0
+        time.sleep(1)
+        return False
 
 
 def map_range(x, in_min, in_max, out_min, out_max):

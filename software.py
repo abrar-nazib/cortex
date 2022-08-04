@@ -17,7 +17,7 @@ FONTCOLOR = "#D6D5A8"
 OBJX = None
 OBJY = None
 BUTTONFONTSIZE = 15
-CONNECTION = True
+CONNECTED = False
 
 
 def hello(*args, **kwargs):
@@ -35,7 +35,6 @@ class GUI(tk.Tk):
         self.iconphoto(True, icon)
         self.config(background=BACKGROUND)
 
-        self.checkConnection()
         self.updateScreenGeometry()
 
         self.pages = {}
@@ -56,10 +55,6 @@ class GUI(tk.Tk):
         global WIDTH, HEIGHT
         WIDTH = self.winfo_screenwidth()
         HEIGHT = self.winfo_screenheight()
-
-    def checkConnection(self):
-        if(CONNECTION == False):
-            self.pages[WelcomePage].disableButtons()
 
 
 class Page(tk.Frame):
@@ -169,10 +164,17 @@ class WelcomePage(Page):
         )
         self.exitButton.pack()
 
+        self.disableButtons()
+
     def disableButtons(self):
         self.pickAndPlaceButton["state"] = tk.DISABLED
         self.writingButton["state"] = tk.DISABLED
         self.manualButton["state"] = tk.DISABLED
+
+    def enableButtons(self):
+        self.pickAndPlaceButton["state"] = tk.NORMAL
+        self.writingButton["state"] = tk.NORMAL
+        self.manualButton["state"] = tk.NORMAL
 
 
 class PickAndPlacePage(Page):
@@ -422,7 +424,19 @@ class SettingsPage(Page):
         return 20+pos*60
 
     def connectToArduino(self):
-        self.comPortOption.updateStatusText("Connected")
+        global CONNECTED
+        port = self.comPortOption.getInputText()
+        self.comPortOption.updateStatusText(f"Connecting...")
+        self.container.update()
+        CONNECTED = servocontroller.connect(port)
+
+        if(CONNECTED):
+            self.comPortOption.updateStatusText(f"Connected to {port}")
+            self.container.pages[WelcomePage].enableButtons()
+
+        else:
+            self.comPortOption.updateStatusText(f"Not Connected")
+            self.container.pages[WelcomePage].disableButtons()
 
     def updateCamera(self):
         newCameraNumber = int(self.cameraOption.getInputText())

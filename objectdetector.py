@@ -1,4 +1,3 @@
-from pickle import GLOBAL, NONE
 # from turtle import setpos
 from types import NoneType
 import cv2
