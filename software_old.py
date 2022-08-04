@@ -86,7 +86,7 @@ def placeObjectGUI():
     servocontroller.placeObject([xSlider.get(), ySlider.get()])
 
 
-def autoPickPlace():
+def autoPickObject():
     servocontroller.pickObject([OBJX, OBJY])
     # pass
 

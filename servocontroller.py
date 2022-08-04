@@ -1,3 +1,4 @@
+from tkinter import E
 from pyfirmata import Arduino, SERVO
 import time
 import math
@@ -11,12 +12,17 @@ SERVOPINS = [9, 10, 11, 6]
 
 
 def connect(port):
-    global board
-    board = Arduino(port)
-    for pin in SERVOPINS:
-        board.digital[pin].mode = SERVO
-    sendData(INITIALANGLES[0], INITIALANGLES[1], INITIALANGLES[2])
-    releaseObject()
+    try:
+        global board
+        board = Arduino(port)
+        for pin in SERVOPINS:
+            board.digital[pin].mode = SERVO
+        sendData(INITIALANGLES[0], INITIALANGLES[1], INITIALANGLES[2])
+        releaseObject()
+        return 1
+    except Exception as e:
+        print(e)
+        return 0
 
 
 def map_range(x, in_min, in_max, out_min, out_max):
@@ -147,10 +153,10 @@ def placeObject(coordinates):
     up(targetAngles, INITIALANGLES)
 
 
-try:
-    connect(PORT)
-except Exception as e:
-    board = None
+# try:
+#     connect(PORT)
+# except Exception as e:
+#     board = None
 
 if(__name__ == "__main__"):
 

@@ -1,50 +1,32 @@
 from pickle import GLOBAL, NONE
-from turtle import setpos
+# from turtle import setpos
 from types import NoneType
 import cv2
 import numpy as np
+import colorsys
 
 CAMERANUMBER = 2
 TRACKBAR1 = 146
 TRACKBAR2 = 112
 AREA = 2500
 
+mouseX = 100
+mouseY = 100
+hsv_img = None
+upper = np.array([35, 55, 100])
+lower = np.array([10, 10, 10])
 POSX = None
 POSY = None
-# def stackImage(scale, imageArray):
-#     rows = len(imageArray)
-#     cols = len(imageArray[0])
-#     rowsAvailable = isinstance(imageArray[0],list)
-#     width = imageArray[0][0].shape[1]
-#     height = imageArray[0][0].shape[0]
-#     if rowsAvailable:
-#         for x in range(0,rows):
-#             for y in range(0, cols):
-#                 if imageArray[x][y].shape[:2] == imageArray[0][0].shape[:2]:
-#                     imageArray[x][y] = cv2.resize(imageArray[x][y],(0,0), None, scale, scale)
-#                 else:
-#                     imageArray[x][y] = cv2.resize(imageArray[x][y],(imageArray[0][0].shape[1], imageArray[0][0].shape[0]), None, scale, scale)
-#                 if len(imageArray[x][y].shape)==2:
-#                     imageArray[x][y] = cv2.cvtColor(imageArray[x][y], cv2.COLOR_GRAY2BGR)
 
-#         imageBlank = np.zeros((height, width, 3), np.unit8)
-#         hor = [imageBlank]*rows
-#         hor_con = [imageBlank]*rows
-#         for x in range(0, rows):
-#             hor[x] = np.hstack(imageArray[x])
-#         ver = np.vstack(hor)
 
-#     else:
-#         for x in range(0, rows):
-#             if imageArray[x].shape[:2] == imageArray[0].shape[:2]:
-#                 imageArray[x] = cv2.resize(imageArray[x],(0,0), None, scale, scale)
-#             else:
-#                 imageArray[x] = cv2.resize(imageArray[x],(imageArray[0].shape[1], imageArray[0].shape[0]), None, scale, scale)
-#             if len(imageArray[x].shape)==2:
-#                     imageArray[x] = cv2.cvtColor(imageArray[x], cv2.COLOR_GRAY2BGR)
-#         hor = np.vstack(imageArray)
-#         ver = hor
-#     return ver
+def updateCamera(cameraNumber):
+    global CAMERANUMBER, cap
+    CAMERANUMBER = cameraNumber
+    cap = cv2.VideoCapture(CAMERANUMBER, cv2.CAP_DSHOW)
+
+
+def empty(*args):   # Needed for the trackbar
+    pass
 
 
 def getPos():
@@ -58,6 +40,45 @@ def crop(img):
     matrix = cv2.getPerspectiveTransform(pts1, pts2)
     output = cv2.warpPerspective(img, matrix, (width, height))
     return output
+
+
+def check_boundaries(value, tolerance, ranges, upper_or_lower):
+    if ranges == 0:
+        boundary = 180
+    elif ranges == 1:
+        boundary = 255
+
+    if(value + tolerance > boundary):
+        value = boundary
+    elif (value - tolerance < 0):
+        value = 0
+    else:
+        if upper_or_lower == 1:
+            value = value + tolerance
+        else:
+            value = value - tolerance
+    return value
+
+
+def mouseClickHandler(event):
+    global mouseX, mouseY, lower, upper, hsv_img
+    # if event == cv2.EVENT_RBUTTONDBLCLK:
+    print(f"x={event.x} y={event.y}")
+    pixel = hsv_img[event.y, event.x]
+    H_upper = check_boundaries(pixel[0], 10, 0, 1)
+    H_lower = check_boundaries(pixel[0], 10, 0, 0)
+    S_upper = check_boundaries(pixel[1], 10, 1, 1)
+    S_lower = check_boundaries(pixel[1], 10, 1, 0)
+    V_upper = check_boundaries(pixel[2], 40, 1, 1)
+    V_lower = check_boundaries(pixel[2], 40, 1, 0)
+
+    upper = np.array([H_upper, S_upper, V_upper])
+    lower = np.array([H_lower, S_lower, V_lower])
+    print(lower, upper)
+
+    # elif event == cv2.EVENT_RBUTTONDBLCLK:
+    #     # cv2.circle(img, (x, y), 100, (255, 0, 0), -1)
+    #     print(f"x={x} y={y}")
 
 
 def getContours(img, imgContour):
@@ -80,39 +101,16 @@ def getContours(img, imgContour):
             cy = int(moments["m01"] / moments["m00"])
             POSX = cx
             POSY = cy
-            # print(cx, "  ", cy)
             x, y, w, h = cv2.boundingRect(approx)
             cv2.circle(imgContour, (cx, cy), 5, (0, 0, 255), -1)
-            # cv2.putText(imgContour, "Centroid", (cx - 25, cy - 25),  cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255,0), 4)
             cv2.rectangle(imgContour, (x, y), (x+w, y+h), (0, 255, 0), 3)
-            # rect = cv2.minAreaRect(cont)
-            # (cx,cy),(w,h), angle = rect
-            # cv2.circle(img, (int(cx), int(cy)),5,(0,0,255), -1)
-            # box = cv2.boxPoints(rect)
-            # box = np.int0(box)
-            # cv2.polylines(img, [box], True, (255,0,0), 2)
-            # print(box)
-            # if cx == None and cy == None:
-        # return cx, cy
-
-
-def draw_circle(event, x, y, flags, param):
-    if event == cv2.EVENT_LBUTTONDBLCLK:
-        # cv2.circle(img, (x, y), 100, (255, 0, 0), -1)
-        print(f"x={x} y={y}")
-
-
-def empty(a):
-    pass
 
 
 frameWidth = 600
 frameHeight = 600
 cap = cv2.VideoCapture(CAMERANUMBER, cv2.CAP_DSHOW)
-
-
-# cap.set(3, frameWidth)
-# cap.set(4, frameHeight)
+# cap = cv2.VideoCapture('https://192.168.0.101:8080/video')
+# cap = cv2.VideoCapture(CAMERANUMBER)
 
 cv2.namedWindow("Parameters")
 cv2.resizeWindow("Parameters", 640, 240)
@@ -121,69 +119,42 @@ cv2.createTrackbar("Threshold2", "Parameters", TRACKBAR2, 255, empty)
 cv2.createTrackbar("Area", "Parameters", AREA, 30000, empty)
 
 
-# while True:
-
 def getImageCoordinates():
-
+    global hsv_img, upper, lower
     success, img = cap.read()
+    # img = cv2.imread('blackC.jpg')
     img = cv2.flip(img, 0)
     img = cv2.flip(img, 1)
     img = crop(img)
     imgContour = img.copy()
-    # imgBlur = cv2.GaussianBlur(img, (7, 7), 1)
-    # imgGray = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2GRAY)
     threshold1 = cv2.getTrackbarPos("Threshold1", "Parameters")
     threshold2 = cv2.getTrackbarPos("Threshold2", "Parameters")
-    # imgCanny = cv2.Canny(imgGray, threshold1, threshold2)
-    # imgStack = stackImage(0.8,([img, imgCanny]))
-    # kernel = np.ones((5, 5))
-    # imgDil = cv2.dilate(imgCanny, kernel, iterations=1)
-    # objX, objY = getContours(imgDil, imgContour)
-    # return imgContour, objX, objY
-    lower_black = np.array([0, 0, 0])
-    upper_black = np.array([35, 55, 100])
-    # # masking the HSV image to get only black colors
-    blackMask = cv2.inRange(img, lower_black, upper_black)
-    # ##########################################################
-    # lower_red = np.array([0, 100, 20])
-    # upper_red = np.array([60, 255, 255])
-    # redMask = cv2.inRange(img, lower_red, upper_red)
-    getContours(blackMask, imgContour)
+    hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    colorMask = cv2.inRange(hsv_img, lower, upper)
+    getContours(colorMask, imgContour)
+    # cv2.imshow("Result", imgContour)
+    # cv2.setMouseCallback('Result', mouseClickHandler)
     return imgContour
-#     cv2.imshow("Result", imgContour)
-#     cv2.setMouseCallback('Result', draw_circle)
 
 
-#     if cv2.waitKey(1) & 0xFF == ord('q'):
-#         break
 if __name__ == "__main__":
     while True:
-        success, img = cap.read()
-        img = cv2.flip(img, 0)
-        img = cv2.flip(img, 1)
-        # img = crop(img)
-        imgContour = img.copy()
-        # imgBlur = cv2.GaussianBlur(img, (7, 7), 1)
-        # imgGray = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2GRAY)
-        threshold1 = cv2.getTrackbarPos("Threshold1", "Parameters")
-        threshold2 = cv2.getTrackbarPos("Threshold2", "Parameters")
-        # imgCanny = cv2.Canny(imgGray, threshold1, threshold2)
-        # imgStack = stackImage(0.8,([img, imgCanny]))
-        # kernel = np.ones((5, 5))
-        # imgDil = cv2.dilate(imgCanny, kernel, iterations=1)
-        # objX, objY = getContours(imgDil, imgContour)
-        # return imgContour, objX, objY
-        lower_black = np.array([0, 0, 0])
-        upper_black = np.array([35, 55, 100])
-        # masking the HSV image to get only black colors
-        blackMask = cv2.inRange(img, lower_black, upper_black)
-        ##########################################################
-        lower_red = np.array([0, 100, 20])
-        upper_red = np.array([60, 255, 255])
-        redMask = cv2.inRange(img, lower_red, upper_red)
-        getContours(blackMask, imgContour)
-        cv2.imshow("Result", imgContour)
-        cv2.setMouseCallback('Result', draw_circle)
+        # success, img = cap.read()
+        # # img = cv2.imread('blackC.jpg')
+        # img = cv2.flip(img, 0)
+        # img = cv2.flip(img, 1)
+        # # img = crop(img)
+        # imgContour = img.copy()
+        # threshold1 = cv2.getTrackbarPos("Threshold1", "Parameters")
+        # threshold2 = cv2.getTrackbarPos("Threshold2", "Parameters")
+        # hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        # # lower_black = np.array([0, 0, 0])
+        # # upper_black = np.array([35, 55, 100])
+        # colorMask = cv2.inRange(hsv_img, lower, upper)
+        # getContours(colorMask, imgContour)
+        # cv2.imshow("Result", imgContour)
+        # cv2.setMouseCallback('Result', mouseClickHandler)
+        getImageCoordinates()
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
