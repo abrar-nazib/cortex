@@ -6,8 +6,8 @@ import coordinateconverter
 
 PORT = "COM5"
 INITIALANGLES = [90, 210, 45]
-GRABANGLE = 155
-ANGLECORRECTIONS = [12, 2, 3]
+GRABANGLE = 156
+ANGLECORRECTIONS = [11, 2, 3]
 SERVOPINS = [9, 10, 11, 6]
 
 
@@ -36,6 +36,10 @@ def rotateServo(pin, angle):
 
 
 def sendData(servo1Angle, servo2Angle, servo3Angle):
+    if(servo1Angle > 90):
+        servo1Angle = servo1Angle + 3
+    if(servo1Angle < 90):
+        servo1Angle = servo1Angle - 3
     rotateServo(SERVOPINS[0], map_range(
         (servo1Angle + ANGLECORRECTIONS[0]), 0, 180, 0, 153))
     if servo2Angle < 90:
