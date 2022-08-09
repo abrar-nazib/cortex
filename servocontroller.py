@@ -60,16 +60,27 @@ def guiControl(servo1Angle, servo2Angle, servo3Angle, servo4Angle):
     # time.sleep(0.01)
 
 
-def stabilizeAngles(servo1Angle, servo2Angle, servo3Angle, previousAngles):
-    sendData(previousAngles[0], servo2Angle+20, previousAngles[2])
+def drawFromCoordinates(coordinate, previousCoordinate):
+    servoAngles = coordinateconverter.convertCoordstoAngles(coordinate)
+    if(math.dist(coordinate, previousCoordinate) > 0.5):
+        previousAngles = coordinateconverter.convertCoordstoAngles(
+            previousCoordinate)
+        stabilizeAngles(servoAngles, previousAngles)
+    else:
+        sendData(servoAngles[0], servoAngles[1], servoAngles[2])
+        time.sleep(0.01)
+
+
+def stabilizeAngles(servoAngles, previousAngles):
+    sendData(previousAngles[0], servoAngles[1]+20, previousAngles[2])
     incrementer = 1
-    if(previousAngles[0] > servo1Angle):
+    if(previousAngles[0] > servoAngles[0]):
         incrementer = -1
     else:
         incrementer = 1
-    for previousAngles[0] in range(int(previousAngles[0]), int(servo1Angle), incrementer):
-        sendData(previousAngles[0], servo2Angle + 15, servo3Angle)
-        time.sleep(0.1)
+    for previousAngles[0] in range(int(previousAngles[0]), int(servoAngles[0]), incrementer):
+        sendData(previousAngles[0], servoAngles[1] + 15, servoAngles[0])
+        time.sleep(0.05)
 
 
 def smoothAngleExecution(previousAngles, targetAngles):
@@ -102,7 +113,7 @@ def down(previousAngles, targetAngles):
     distances.append(targetAngles[2] - previousAngles[2])
 
     presentAngles = smoothAngleExecution(previousAngles, [
-                                         targetAngles[0], previousAngles[1] + distances[1], targetAngles[2]])
+        targetAngles[0], previousAngles[1] + distances[1], targetAngles[2]])
     smoothAngleExecution(presentAngles, targetAngles)
 
 

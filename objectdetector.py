@@ -44,7 +44,7 @@ def getPos():
 
 def crop(img):
     width, height = 600, 600
-    pts1 = np.float32([[144, 34], [596, 58], [129, 393], [573, 415]])
+    pts1 = np.float32([[132, 24], [587, 50], [120, 384], [562, 406]])
     pts2 = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
     matrix = cv2.getPerspectiveTransform(pts1, pts2)
     output = cv2.warpPerspective(img, matrix, (width, height))
@@ -151,8 +151,8 @@ def getImageCoordinates():
     # # threshold2 = cv2.getTrackbarPos("Threshold2", "Parameters")
     imgBlur = cv2.GaussianBlur(img, (7, 7), 3)
     hsv_img = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2HSV)
-    blackMask = cv2.inRange(hsv_img, (0, 0, 0), (179, 218, 83))
-    redMask = cv2.inRange(hsv_img, (0, 152, 0), (49, 235, 183))
+    blackMask = cv2.inRange(hsv_img, (0, 0, 0), (154, 151, 59))
+    redMask = cv2.inRange(hsv_img, (0, 119, 0), (180, 255, 255))
     blueMask = cv2.inRange(hsv_img, (95, 105, 72), (103, 253, 200))
     bitwise1 = cv2.bitwise_or(blackMask, redMask)
     bitwise2 = cv2.bitwise_or(bitwise1,  blueMask)
@@ -215,7 +215,7 @@ if __name__ == "__main__":
         imgBlur = cv2.GaussianBlur(img, (7, 7), 3)
         hsv_img = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2HSV)
         blackMask = cv2.inRange(hsv_img, (0, 0, 0), (139, 223, 44))
-        redMask = cv2.inRange(hsv_img, (0, 107, 0), (180, 255, 255))
+        redMask = cv2.inRange(hsv_img, (0, 119, 0), (180, 255, 255))
         blueMask = cv2.inRange(hsv_img, (95, 105, 72), (103, 253, 200))
         bitwise1 = cv2.bitwise_or(blackMask, redMask)
         bitwise2 = cv2.bitwise_or(bitwise1,  blueMask)
