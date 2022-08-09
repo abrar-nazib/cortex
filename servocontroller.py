@@ -1,3 +1,4 @@
+from tkinter import E
 from pyfirmata import Arduino, SERVO
 import time
 import math
@@ -5,18 +6,24 @@ import coordinateconverter
 
 PORT = "COM5"
 INITIALANGLES = [90, 210, 45]
-GRABANGLE = 162
-ANGLECORRECTIONS = [11, 5, 3]
+GRABANGLE = 156
+ANGLECORRECTIONS = [11, 2, 3]
 SERVOPINS = [9, 10, 11, 6]
 
 
 def connect(port):
-    global board
-    board = Arduino(port)
-    for pin in SERVOPINS:
-        board.digital[pin].mode = SERVO
-    sendData(INITIALANGLES[0], INITIALANGLES[1], INITIALANGLES[2])
-    releaseObject()
+    try:
+        global board
+        board = Arduino(port)
+        for pin in SERVOPINS:
+            board.digital[pin].mode = SERVO
+        sendData(INITIALANGLES[0], INITIALANGLES[1], INITIALANGLES[2])
+        releaseObject()
+        return True
+    except Exception as e:
+        print(e)
+        time.sleep(1)
+        return False
 
 
 def map_range(x, in_min, in_max, out_min, out_max):
@@ -29,6 +36,10 @@ def rotateServo(pin, angle):
 
 
 def sendData(servo1Angle, servo2Angle, servo3Angle):
+    if(servo1Angle > 90):
+        servo1Angle = servo1Angle + 3
+    if(servo1Angle < 90):
+        servo1Angle = servo1Angle - 3
     rotateServo(SERVOPINS[0], map_range(
         (servo1Angle + ANGLECORRECTIONS[0]), 0, 180, 0, 153))
     if servo2Angle < 90:
@@ -49,16 +60,27 @@ def guiControl(servo1Angle, servo2Angle, servo3Angle, servo4Angle):
     # time.sleep(0.01)
 
 
-def stabilizeAngles(servo1Angle, servo2Angle, servo3Angle, previousAngles):
-    sendData(previousAngles[0], servo2Angle+20, previousAngles[2])
+def drawFromCoordinates(coordinate, previousCoordinate):
+    servoAngles = coordinateconverter.convertCoordstoAngles(coordinate)
+    if(math.dist(coordinate, previousCoordinate) > 0.5):
+        previousAngles = coordinateconverter.convertCoordstoAngles(
+            previousCoordinate)
+        stabilizeAngles(servoAngles, previousAngles)
+    else:
+        sendData(servoAngles[0], servoAngles[1], servoAngles[2])
+        time.sleep(0.01)
+
+
+def stabilizeAngles(servoAngles, previousAngles):
+    sendData(previousAngles[0], servoAngles[1]+20, previousAngles[2])
     incrementer = 1
-    if(previousAngles[0] > servo1Angle):
+    if(previousAngles[0] > servoAngles[0]):
         incrementer = -1
     else:
         incrementer = 1
-    for previousAngles[0] in range(int(previousAngles[0]), int(servo1Angle), incrementer):
-        sendData(previousAngles[0], servo2Angle + 15, servo3Angle)
-        time.sleep(0.1)
+    for previousAngles[0] in range(int(previousAngles[0]), int(servoAngles[0]), incrementer):
+        sendData(previousAngles[0], servoAngles[1] + 15, servoAngles[0])
+        time.sleep(0.05)
 
 
 def smoothAngleExecution(previousAngles, targetAngles):
@@ -91,7 +113,7 @@ def down(previousAngles, targetAngles):
     distances.append(targetAngles[2] - previousAngles[2])
 
     presentAngles = smoothAngleExecution(previousAngles, [
-                                         targetAngles[0], previousAngles[1] + distances[1], targetAngles[2]])
+        targetAngles[0], previousAngles[1] + distances[1], targetAngles[2]])
     smoothAngleExecution(presentAngles, targetAngles)
 
 
@@ -147,10 +169,10 @@ def placeObject(coordinates):
     up(targetAngles, INITIALANGLES)
 
 
-try:
-    connect(PORT)
-except Exception as e:
-    board = None
+# try:
+#     connect(PORT)
+# except Exception as e:
+#     board = None
 
 if(__name__ == "__main__"):
 
