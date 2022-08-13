@@ -41,7 +41,7 @@ class GUI(tk.Tk):
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
         self.title("CORTEX")
-        icon = tk.PhotoImage(file="assets/brain.png")
+        icon = tk.PhotoImage(file="../assets/brain.png")
         self.iconphoto(True, icon)
         self.config(background=BACKGROUND)
 
@@ -134,7 +134,7 @@ class WelcomePage(Page):
 
         headingImage = ImageLabel(
             self,
-            location="assets/brain.png",
+            location="../assets/brain.png",
             size=(400, 400)
         )
         headingImage.pack(fill='x', pady=10)
@@ -204,7 +204,7 @@ class AboutPage(Page):
 
         headingImage = ImageLabel(
             self,
-            location="assets/brain.png",
+            location="../assets/brain.png",
             size=(350, 350)
         )
         headingImage.pack(fill='x', pady=10)
@@ -234,7 +234,7 @@ class PickAndPlacePage(Page):
 
         videoFeed = ImageLabel(
             self,
-            location="assets/brain.png",
+            location="../assets/brain.png",
             size=(600, 600)
         )
         videoFeed.place(x=600, y=70)
@@ -367,7 +367,7 @@ class WritingPage(Page):
 
         # videoFeed1 = ImageLabel(
         #     self,
-        #     location="assets/brain2.png",
+        #     location="../assets/brain2.png",
         #     size=(600, 600)
         # )
         # videoFeed1.place(x=10, y=70)
@@ -382,7 +382,7 @@ class WritingPage(Page):
 
         videoFeed2 = ImageLabel(
             self,
-            location="assets/brain2.png", size=(600, 600)
+            location="../assets/brain2.png", size=(600, 600)
         )
         videoFeed2.place(x=WIDTH-610, y=70)
         self.videoFeed2 = videoFeed2
@@ -461,7 +461,7 @@ class WritingPage(Page):
 
     def uploadImage(self):
         uploadedImageLocation = filedialog.askopenfilename(
-            initialdir="./images",
+            initialdir="../images",
             title="Upload Images",
             filetypes=(("PNG files", "*.png"), ("JPG files",
                        "*.jpg"), ("JPEG files", "*.jpeg"))
@@ -660,7 +660,7 @@ class CalibrationPage(Page):
 
         videoFeed1 = ImageLabel(
             self,
-            "assets/brain2.png",
+            "../assets/brain2.png",
             size=(400, 400)
         )
         videoFeed1.place(x=10, y=70)
@@ -668,7 +668,7 @@ class CalibrationPage(Page):
 
         videoFeed2 = ImageLabel(
             self,
-            "assets/brain2.png", size=(400, 400)
+            "../assets/brain2.png", size=(400, 400)
         )
         videoFeed2.place(x=WIDTH-10-400, y=70)
         self.videoFeed2 = videoFeed2
@@ -794,7 +794,7 @@ class ManualControlPage(Page):
 
         videoFeed = ImageLabel(
             self,
-            "assets/brain.png", size=(600, 600)
+            "../assets/brain.png", size=(600, 600)
         )
         videoFeed.place(x=600, y=70)
         self.videoFeed = videoFeed
