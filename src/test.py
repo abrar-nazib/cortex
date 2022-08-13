@@ -127,7 +127,7 @@ def getImageCoordinates():
     colorMask = cv2.inRange(hsv_img, lower, upper)
     getContours(colorMask, imgContour)
     # cv2.imshow("Result", imgContour)
-    # cv2.setMouseCallback('Result', mouseClickHandler)
+    cv2.setMouseCallback('Result', mouseClickHandler)
     return imgContour
 
 
