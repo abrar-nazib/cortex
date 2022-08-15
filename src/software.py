@@ -8,6 +8,7 @@ import cv2
 from PIL import Image, ImageTk
 import objectdetector
 import skeletonize
+import coordinateconverter
 import time
 
 WIDTH = 1366
@@ -573,27 +574,27 @@ class SettingsPage(Page):
             posX=10,
             posY=self.postoY(2),
             labelText="Length of Base",
-            inputText="0",
+            inputText=coordinateconverter.baseArmLength,
             buttonText="Save",
-            statusText="Current Length:"
+            statusText=f"Current Length: {coordinateconverter.baseArmLength}"
         )
         upperArmLength = SettingsOption(
             self,
             posX=10,
             posY=self.postoY(3),
             labelText="Length of Upper Arm:",
-            inputText="0",
+            inputText=coordinateconverter.shoulderArmLength,
             buttonText="Save",
-            statusText="Current Length:"
+            statusText=f"Current Length: {coordinateconverter.shoulderArmLength}"
         )
         foreArmLength = SettingsOption(
             self,
             posX=10,
             posY=self.postoY(4),
-            labelText="Length of Base:",
-            inputText="0",
+            labelText="Length of Forearm:",
+            inputText=coordinateconverter.elbowArmLength,
             buttonText="Save",
-            statusText="Current Length:"
+            statusText=f"Current Length: {coordinateconverter.elbowArmLength}"
         )
         baseServoAngleCorrection = SettingsOption(
             self,

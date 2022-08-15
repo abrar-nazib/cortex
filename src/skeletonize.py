@@ -11,8 +11,7 @@ import numpy as np
 def skeletonizeImage(imgLocation):
     image = imread(imgLocation)
     image = resize(image, (600, 600))
-    # grayimage = cvtColor(image, COLOR_BGR2GRAY)
-    # grayimage = rgb2gray(image)
+
     ret, invertedBinimage = threshold(image, 127, 255, THRESH_BINARY_INV)
 
     # perform skeletonization
