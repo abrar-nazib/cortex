@@ -185,9 +185,9 @@ class WelcomePage(Page):
         self.disableButtons()
 
     def disableButtons(self):
-        # self.pickAndPlaceButton["state"] = tk.DISABLED
-        # self.writingButton["state"] = tk.DISABLED
-        # self.manualButton["state"] = tk.DISABLED
+        self.pickAndPlaceButton["state"] = tk.DISABLED
+        self.writingButton["state"] = tk.DISABLED
+        self.manualButton["state"] = tk.DISABLED
         pass
 
     def enableButtons(self):
