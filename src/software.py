@@ -2,7 +2,6 @@ import guiframes
 import tkinter as tk
 from tkinter import filedialog  # dunno why it needs to be imported separately
 import servocontroller
-from matplotlib.pyplot import xscale
 import threading
 import cv2
 from PIL import Image, ImageTk
@@ -366,18 +365,12 @@ class WritingPage(Page):
         )
         writingPageHeader.pack(fill='x')
 
-        # videoFeed1 = ImageLabel(
-        #     self,
-        #     location="../assets/brain2.png",
-        #     size=(600, 600)
-        # )
-        # videoFeed1.place(x=10, y=70)
-        # self.videoFeed1 = videoFeed1
         canvas = tk.Canvas(self, width=600, height=600,
                            background="#FFFFFF", cursor="hand2")
         canvas.place(x=10, y=70)
         canvas.bind("<Button-1>", self.locateXY)
         canvas.bind("<B1-Motion>", self.addLine)
+        canvas.bind("<Motion>", self.trackMouse)
 
         self.canvas = canvas
 
@@ -427,36 +420,23 @@ class WritingPage(Page):
             self,
             text="Live Drawing",
             width=self.buttonWidth,
-            command=self.uploadImage
+            command=self.liveDrawing
         )
         self.liveDrawingButton.pack(pady=5, padx=10, side="right", anchor="se")
 
-    # def updateVideoFeeds(self, var):
-    #     image1, image2 = objectdetector.adjustHSV(
-    #         self.h_min.get(),
-    #         self.h_max.get(),
-    #         self.s_min.get(),
-    #         self.s_max.get(),
-    #         self.v_min.get(),
-    #         self.v_max.get(),
-    #     )
-    #     image1 = cvtImage(image1)
-    #     image2 = cvtImage(image2)
-    #     self.image1 = image1
-    #     self.image2 = image2
-    #     self.videoFeed1.configure(image=self.image1)
-    #     self.videoFeed2.configure(image=self.image2)
-    #     self.container.update()
-
     def addLine(self, event):
-        if(self.liveDrawingMode):
+        if (self.liveDrawingMode):
             self.canvas.create_line((self.currentX, self.currentY, event.x,
                                     event.y), width=5, fill=self.color, capstyle=tk.ROUND, smooth=True)
             self.currentX = event.x
             self.currentY = event.y
+            print(f"Draw-> {event.x} {event.y}")
+
+    def trackMouse(self, event):
+        print(f"{event.x} {event.y}")
 
     def locateXY(self, event):
-        if(self.liveDrawingMode):
+        if (self.liveDrawingMode):
             self.currentX = event.x
             self.currentY = event.y
 
@@ -476,6 +456,9 @@ class WritingPage(Page):
         self.liveDrawingButton["state"] = tk.DISABLED
         self.liveDrawingMode = False
         self.startDrawingButton["state"] = tk.DISABLED
+
+    def liveDrawing(self):
+        pass
 
     def analyzeImage(self):
         self.imageCoordinates = skeletonize.skeletonizeImage(
@@ -553,7 +536,7 @@ class SettingsPage(Page):
             posX=10,
             posY=self.postoY(0),
             labelText="Com Port: ",
-            inputText="COM5",
+            inputText=servocontroller.PORT,
             buttonText="Connect",
             statusText="Not Connected",
             buttonCommand=self.connectToArduino
@@ -634,7 +617,7 @@ class SettingsPage(Page):
         self.container.update()
         CONNECTED = servocontroller.connect(port)
 
-        if(CONNECTED):
+        if (CONNECTED):
             self.comPortOption.updateStatusText(f"Connected to {port}")
             self.container.pages[WelcomePage].enableButtons()
 
@@ -892,9 +875,9 @@ while True:
 
     # Convert image to PhotoImage
     imgtk = ImageTk.PhotoImage(image=img)
-    if(window.raised[0] == PickAndPlacePage):
+    if (window.raised[0] == PickAndPlacePage):
         window.pages[PickAndPlacePage].videoFeed.configure(image=imgtk)
-    if(window.raised[0] == ManualControlPage):
+    if (window.raised[0] == ManualControlPage):
         window.pages[ManualControlPage].videoFeed.configure(image=imgtk)
     window.update()
 

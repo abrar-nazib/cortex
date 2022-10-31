@@ -4,7 +4,7 @@ import time
 import math
 import coordinateconverter
 
-PORT = "COM5"
+PORT = "COM7"
 INITIALANGLES = [90, 210, 45]
 GRABANGLE = 156
 ANGLECORRECTIONS = [11, 2, 3]
@@ -36,9 +36,9 @@ def rotateServo(pin, angle):
 
 
 def sendData(servo1Angle, servo2Angle, servo3Angle):
-    if(servo1Angle > 90):
+    if (servo1Angle > 90):
         servo1Angle = servo1Angle + 3
-    if(servo1Angle < 90):
+    if (servo1Angle < 90):
         servo1Angle = servo1Angle - 3
     rotateServo(SERVOPINS[0], map_range(
         (servo1Angle + ANGLECORRECTIONS[0]), 0, 180, 0, 153))
@@ -48,7 +48,7 @@ def sendData(servo1Angle, servo2Angle, servo3Angle):
         servo2Angle = 250
     rotateServo(SERVOPINS[1], map_range(
         (servo2Angle - 90+ANGLECORRECTIONS[1]), 0, 180, 0, 153))
-    if(servo3Angle < 45):
+    if (servo3Angle < 45):
         servo3Angle = 45
     rotateServo(SERVOPINS[2], map_range(
         (servo3Angle-45+ANGLECORRECTIONS[2]), 0, 180, 0, 160))
@@ -62,7 +62,7 @@ def guiControl(servo1Angle, servo2Angle, servo3Angle, servo4Angle):
 
 def drawFromCoordinates(coordinate, previousCoordinate):
     servoAngles = coordinateconverter.convertCoordstoAngles(coordinate)
-    if(math.dist(coordinate, previousCoordinate) > 0.5):
+    if (math.dist(coordinate, previousCoordinate) > 0.5):
         previousAngles = coordinateconverter.convertCoordstoAngles(
             previousCoordinate)
         stabilizeAngles(servoAngles, previousAngles)
@@ -74,7 +74,7 @@ def drawFromCoordinates(coordinate, previousCoordinate):
 def stabilizeAngles(servoAngles, previousAngles):
     sendData(previousAngles[0], servoAngles[1]+20, previousAngles[2])
     incrementer = 1
-    if(previousAngles[0] > servoAngles[0]):
+    if (previousAngles[0] > servoAngles[0]):
         incrementer = -1
     else:
         incrementer = 1
@@ -174,7 +174,7 @@ def placeObject(coordinates):
 # except Exception as e:
 #     board = None
 
-if(__name__ == "__main__"):
+if (__name__ == "__main__"):
 
     # targetAngles = [116, 135, 59]
 
