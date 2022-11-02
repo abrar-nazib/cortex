@@ -238,7 +238,7 @@ class PickAndPlacePage(Page):
             size=(600, 600)
         )
         videoFeed.place(x=600, y=70)
-        videoFeed.bind("<Button-3>", objectdetector.mouseClickHandler)
+        # videoFeed.bind("<Button-3>", objectdetector.mouseClickHandler)
         self.videoFeed = videoFeed
 
         backButton = ButtonLabel(
@@ -352,10 +352,11 @@ class PickAndPlacePage(Page):
 
 
 class WritingPage(Page):
+    __liveDrawingMode = False
+
     def __init__(self, container):
         super().__init__(container)
 
-        self.liveDrawingMode = True
         self.buttonWidth = 22
         self.color = "#000000"
 
@@ -368,6 +369,7 @@ class WritingPage(Page):
         canvas = tk.Canvas(self, width=600, height=600,
                            background="#FFFFFF", cursor="hand2")
         canvas.place(x=10, y=70)
+        # canvas.bind("<Button-1>", self.locateXY)
         canvas.bind("<Button-1>", self.locateXY)
         canvas.bind("<B1-Motion>", self.addLine)
         canvas.bind("<Motion>", self.trackMouse)
@@ -392,7 +394,7 @@ class WritingPage(Page):
 
         self.startDrawingButton = ButtonLabel(
             self,
-            text="Start Drawing",
+            text="Start Plotting",
             width=self.buttonWidth,
             state=tk.DISABLED,
             command=self.drawImage
@@ -418,25 +420,49 @@ class WritingPage(Page):
 
         self.liveDrawingButton = ButtonLabel(
             self,
-            text="Live Drawing",
+            text="Live",
             width=self.buttonWidth,
             command=self.liveDrawing
         )
         self.liveDrawingButton.pack(pady=5, padx=10, side="right", anchor="se")
 
+    @property
+    def liveDrawingMode(self):
+        return self.__liveDrawingMode
+
+    @liveDrawingMode.setter
+    def liveDrawingMode(self, n: bool):
+        self.__liveDrawingMode = n
+
     def addLine(self, event):
-        if (self.liveDrawingMode):
+        if (self.__liveDrawingMode):
             self.canvas.create_line((self.currentX, self.currentY, event.x,
                                     event.y), width=5, fill=self.color, capstyle=tk.ROUND, smooth=True)
             self.currentX = event.x
             self.currentY = event.y
-            print(f"Draw-> {event.x} {event.y}")
+            coordX, coordY = self.container.pages[PickAndPlacePage].calculateActualPosition(
+                event.x, event.y
+            )
+            servoAngles = coordinateconverter.convertCoordstoAngles(
+                [coordX, coordY])
+
+            servocontroller.sendData(
+                servoAngles[0], servoAngles[1]-5, servoAngles[2])
 
     def trackMouse(self, event):
-        print(f"{event.x} {event.y}")
+        if (self.__liveDrawingMode):
+            # print(f"{event.x} {event.y}")
+            coordX, coordY = self.container.pages[PickAndPlacePage].calculateActualPosition(
+                event.x, event.y
+            )
+            servoAngles = coordinateconverter.convertCoordstoAngles(
+                [coordX, coordY])
+
+            servocontroller.sendData(
+                servoAngles[0], servoAngles[1]+5, servoAngles[2])
 
     def locateXY(self, event):
-        if (self.liveDrawingMode):
+        if (self.__liveDrawingMode):
             self.currentX = event.x
             self.currentY = event.y
 
@@ -454,11 +480,21 @@ class WritingPage(Page):
         self.videoFeed2.configure(image=self.videoFeed1Image)
         self.analyzeButton["state"] = tk.NORMAL
         self.liveDrawingButton["state"] = tk.DISABLED
-        self.liveDrawingMode = False
+        self.__liveDrawingMode = False
         self.startDrawingButton["state"] = tk.DISABLED
 
     def liveDrawing(self):
-        pass
+        self.clearCanvas()
+        if (self.liveDrawingMode):
+            self.__liveDrawingMode = False
+            self.uploadButton["state"] = tk.NORMAL
+            servocontroller.guiControl(90, 210, 45, 120)
+        else:
+            self.__liveDrawingMode = True
+            self.uploadButton["state"] = tk.DISABLED
+            servocontroller.guiControl(90, 150, 45, 170)
+        print(self.liveDrawingMode)
+        time.sleep(1)
 
     def analyzeImage(self):
         self.imageCoordinates = skeletonize.skeletonizeImage(
@@ -472,6 +508,7 @@ class WritingPage(Page):
     def drawImage(self):
         self.clearCanvas()
         previousCoordinate = [0, 10]
+        servocontroller.grabObject()
         for coordinate in self.imageCoordinates:
             self.create_circle(coordinate[0], coordinate[1], 1, self.canvas)
             self.container.update()
@@ -484,6 +521,8 @@ class WritingPage(Page):
             previousCoordinate = [coordX, coordY]
             # print(f"{coordX} {coordY}")
             # time.sleep(0.01)
+        self.liveDrawingButton["state"] = tk.NORMAL
+        self.startDrawingButton["state"] = tk.DISABLED
 
     def create_circle(self, x, y, r, canvasName):  # center coordinates, radius
         x0 = x - r
@@ -879,6 +918,9 @@ while True:
         window.pages[PickAndPlacePage].videoFeed.configure(image=imgtk)
     if (window.raised[0] == ManualControlPage):
         window.pages[ManualControlPage].videoFeed.configure(image=imgtk)
+    if (window.raised[0] == WritingPage):
+        if (window.pages[WritingPage].liveDrawingMode == True):
+            window.pages[WritingPage].videoFeed2.configure(image=imgtk)
     window.update()
 
 

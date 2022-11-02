@@ -6,7 +6,7 @@ from cv2 import bitwise_and
 import numpy as np
 import colorsys
 
-CAMERANUMBER = 0
+CAMERANUMBER = 1
 TRACKBAR1 = 146
 TRACKBAR2 = 112
 AREA = 2400
@@ -44,7 +44,7 @@ def getPos():
 
 def crop(img):
     width, height = 600, 600
-    pts1 = np.float32([[132, 24], [587, 50], [120, 384], [562, 406]])
+    pts1 = np.float32([[43, 18], [590, 53], [35, 459], [561, 471]])
     pts2 = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
     matrix = cv2.getPerspectiveTransform(pts1, pts2)
     output = cv2.warpPerspective(img, matrix, (width, height))
@@ -57,7 +57,7 @@ def check_boundaries(value, tolerance, ranges, upper_or_lower):
     elif ranges == 1:
         boundary = 255
 
-    if(value + tolerance > boundary):
+    if (value + tolerance > boundary):
         value = boundary
     elif (value - tolerance < 0):
         value = 0
@@ -143,8 +143,8 @@ def getImageCoordinates():
     except Exception as e:
         img = cv2.imread("assets/brain2.png")
     # img = cv2.imread('RedC.jpeg')
-    img = cv2.flip(img, 0)
-    img = cv2.flip(img, 1)
+    # img = cv2.flip(img, 0)
+    # img = cv2.flip(img, 1)
     img = crop(img)
     imgContour = img.copy()
     # # threshold1 = cv2.getTrackbarPos("Threshold1", "Parameters")
@@ -170,8 +170,8 @@ def getImageCoordinates():
 
 def adjustHSV(h_min, h_max, s_min, s_max, v_min, v_max):
     _, img = cap.read()
-    img = cv2.flip(img, 0)
-    img = cv2.flip(img, 1)
+    # img = cv2.flip(img, 0)
+    # img = cv2.flip(img, 1)
     img = crop(img)
     # img = cv2.imread('RedC.jpeg')
     imgHsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -196,7 +196,7 @@ def adjustHSV(h_min, h_max, s_min, s_max, v_min, v_max):
     # cv2.imshow('Result', result)
     # cv2.imshow('Mask', mask)
 
-    return(result, mask)
+    return (result, mask)
 
 
 if __name__ == "__main__":
@@ -206,8 +206,8 @@ if __name__ == "__main__":
         except Exception as e:
             img = cv2.imread("assets/brain2.png")
         # img = cv2.imread('RedC.jpeg')
-        img = cv2.flip(img, 0)
-        img = cv2.flip(img, 1)
+        # img = cv2.flip(img, 0)
+        # img = cv2.flip(img, 1)
         # img = crop(img)
         imgContour = img.copy()
         # # threshold1 = cv2.getTrackbarPos("Threshold1", "Parameters")

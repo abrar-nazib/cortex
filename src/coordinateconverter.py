@@ -1,5 +1,5 @@
 import math
-baseArmLength = 7.7
+baseArmLength = 6.8
 shoulderArmLength = 10.4
 elbowArmLength = 15.7
 
