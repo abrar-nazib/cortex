@@ -44,7 +44,7 @@ def getPos():
 
 def crop(img):
     width, height = 600, 600
-    pts1 = np.float32([[43, 18], [590, 53], [35, 459], [561, 471]])
+    pts1 = np.float32([[46, 6], [592, 46], [32, 450], [558, 467]])
     pts2 = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
     matrix = cv2.getPerspectiveTransform(pts1, pts2)
     output = cv2.warpPerspective(img, matrix, (width, height))
@@ -114,7 +114,7 @@ def getContours(img, imgContour):
         # minArea = cv2.getTrackbarPos("Area", "Parameters")
         minArea = AREA
         if area > minArea:
-            cv2.drawContours(imgContour, cont, -1, (255, 0, 255), 3)
+            cv2.drawContours(imgContour, cont, -1, (226, 135, 67), 3)
             peri = cv2.arcLength(cont, True)
             approx = cv2.approxPolyDP(cont, 0.02*peri, True)
             moments = cv2.moments(cont)
@@ -151,8 +151,8 @@ def getImageCoordinates():
     # # threshold2 = cv2.getTrackbarPos("Threshold2", "Parameters")
     imgBlur = cv2.GaussianBlur(img, (7, 7), 3)
     hsv_img = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2HSV)
-    blackMask = cv2.inRange(hsv_img, (0, 0, 0), (154, 151, 59))
-    redMask = cv2.inRange(hsv_img, (0, 119, 0), (180, 255, 255))
+    blackMask = cv2.inRange(hsv_img, (0, 0, 0), (164, 135, 108))
+    redMask = cv2.inRange(hsv_img, (167, 69, 0), (180, 255, 255))
     blueMask = cv2.inRange(hsv_img, (95, 105, 72), (103, 253, 200))
     bitwise1 = cv2.bitwise_or(blackMask, redMask)
     bitwise2 = cv2.bitwise_or(bitwise1,  blueMask)

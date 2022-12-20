@@ -238,7 +238,7 @@ class PickAndPlacePage(Page):
             size=(600, 600)
         )
         videoFeed.place(x=600, y=70)
-        # videoFeed.bind("<Button-3>", objectdetector.mouseClickHandler)
+        videoFeed.bind("<Button-3>", self.selectPosition)
         self.videoFeed = videoFeed
 
         backButton = ButtonLabel(
@@ -349,6 +349,11 @@ class PickAndPlacePage(Page):
             cv2.rectangle(img, (10, 10),
                           (20, 20), (120, 0, 0), 2)
             print(e)
+
+    def selectPosition(self, event):
+        x, y = self.calculateActualPosition(event.x, event.y)
+        self.xSlider.set(x)
+        self.ySlider.set(y)
 
 
 class WritingPage(Page):
@@ -492,7 +497,7 @@ class WritingPage(Page):
         else:
             self.__liveDrawingMode = True
             self.uploadButton["state"] = tk.DISABLED
-            servocontroller.guiControl(90, 150, 45, 170)
+            servocontroller.guiControl(90, 150, 45, 180)
         print(self.liveDrawingMode)
         time.sleep(1)
 
@@ -507,8 +512,9 @@ class WritingPage(Page):
 
     def drawImage(self):
         self.clearCanvas()
+        servocontroller.guiControl(90, 150, 45, 180)
+        time.sleep(0.5)
         previousCoordinate = [0, 10]
-        servocontroller.grabObject()
         for coordinate in self.imageCoordinates:
             self.create_circle(coordinate[0], coordinate[1], 1, self.canvas)
             self.container.update()

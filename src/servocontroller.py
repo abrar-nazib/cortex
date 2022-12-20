@@ -1,4 +1,3 @@
-from tkinter import E
 from pyfirmata import Arduino, SERVO
 import time
 import math
@@ -31,7 +30,8 @@ def map_range(x, in_min, in_max, out_min, out_max):
 
 
 def rotateServo(pin, angle):
-    board.digital[pin].write(angle)
+    if (0 <= angle <= 180):
+        board.digital[pin].write(angle)
     # time.sleep(0.015)
 
 
@@ -48,8 +48,8 @@ def sendData(servo1Angle, servo2Angle, servo3Angle):
         servo2Angle = 250
     rotateServo(SERVOPINS[1], map_range(
         (servo2Angle - 90+ANGLECORRECTIONS[1]), 0, 180, 0, 153))
-    if (servo3Angle < 45):
-        servo3Angle = 45
+    if (servo3Angle < 40):
+        servo3Angle = 40
     rotateServo(SERVOPINS[2], map_range(
         (servo3Angle-45+ANGLECORRECTIONS[2]), 0, 180, 0, 160))
 
@@ -79,7 +79,7 @@ def stabilizeAngles(servoAngles, previousAngles):
     else:
         incrementer = 1
     for previousAngles[0] in range(int(previousAngles[0]), int(servoAngles[0]), incrementer):
-        sendData(previousAngles[0], servoAngles[1] + 15, servoAngles[0])
+        sendData(previousAngles[0], servoAngles[1] + 15, servoAngles[2])
         time.sleep(0.05)
 
 
