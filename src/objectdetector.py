@@ -1,3 +1,4 @@
+# fmt: off
 from pickle import GLOBAL, NONE
 # from turtle import setpos
 from types import NoneType
@@ -5,8 +6,9 @@ import cv2
 from cv2 import bitwise_and
 import numpy as np
 import colorsys
+# fmt: on
 
-CAMERANUMBER = 0
+CAMERANUMBER = 1
 TRACKBAR1 = 146
 TRACKBAR2 = 112
 AREA = 2400

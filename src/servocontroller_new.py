@@ -3,7 +3,7 @@ import time
 import math
 import coordinateconverter
 
-PORT = "COM7"
+PORT = "COM3"
 
 
 def connect(port):

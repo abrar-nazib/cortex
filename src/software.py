@@ -1,3 +1,4 @@
+# fmt: off
 import guiframes
 import tkinter as tk
 from tkinter import filedialog  # dunno why it needs to be imported separately
@@ -9,6 +10,7 @@ import objectdetector
 import skeletonize
 import coordinateconverter
 import time
+# fmt: on
 
 WIDTH = 1366
 HEIGHT = 768
