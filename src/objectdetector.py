@@ -3,9 +3,9 @@ from pickle import GLOBAL, NONE
 # from turtle import setpos
 from types import NoneType
 import cv2
-from cv2 import bitwise_and
+# from cv2 import bitwise_and
 import numpy as np
-import colorsys
+# import colorsys
 # fmt: on
 
 CAMERANUMBER = 1
