@@ -6,7 +6,7 @@ from cv2 import bitwise_and
 import numpy as np
 import colorsys
 
-CAMERANUMBER = 1
+CAMERANUMBER = 0
 TRACKBAR1 = 146
 TRACKBAR2 = 112
 AREA = 2400

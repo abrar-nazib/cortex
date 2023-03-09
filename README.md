@@ -8,6 +8,38 @@
 
 [Video Demo](https://youtu.be/yXRN9Aov4zM)
 
+## Instructions for Download
+
+Clone the repository:
+
+```
+git clone https://github.com/abrar-nazib/cortex.git
+```
+
+Then navigate to the project folder and create a virtual environment
+
+```
+python -m venv venv
+```
+
+After creating virtual environment using `venv`, Activate the environment
+
+```
+./venv/Scripts/activate
+```
+
+Install the required packages
+
+```
+pip install -r requirements.txt
+```
+
+navigate to the `src` directory and run `software.py`
+
+```
+python software.py
+```
+
 ## Docs
 
 Detailed documentation will be provided when we add support for 6DOF robotic arms\
