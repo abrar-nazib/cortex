@@ -3,10 +3,10 @@ import time
 import math
 import coordinateconverter
 
-PORT = "COM7"
+PORT = "COM3"
 INITIALANGLES = [90, 210, 45]
 GRABANGLE = 156
-ANGLECORRECTIONS = [11, 2, 3]
+ANGLECORRECTIONS = [11, 0, 3]
 SERVOPINS = [9, 10, 11, 6]
 
 
