@@ -40,7 +40,7 @@ navigate to the `src` directory and run `software.py`
 python software.py
 ```
 
-## Docs
+## Documentation
 
 Detailed documentation will be provided when we add support for 6DOF robotic arms\
 The hackster article provides detailed working procedure.
