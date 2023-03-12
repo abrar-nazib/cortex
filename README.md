@@ -8,7 +8,7 @@
 
 [Video Demo](https://youtu.be/yXRN9Aov4zM)
 
-## Instructions for Download
+## Instructions for Installing in Local
 
 Clone the repository:
 
