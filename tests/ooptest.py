@@ -1,11 +1,13 @@
-def logger(msg: str):
-    def log_message():
-        print('Log: ', msg)
-    return log_message
+def outer_func(msg):
+    message = msg
+
+    def inner_func():
+        print(message)
+    return inner_func
 
 
-message_logger1 = logger("mairala")
-message_logger2 = logger("kaittala")
+m1 = outer_func("yo")
+m2 = outer_func("hello")
 
-message_logger1()
-message_logger2()
+m1()
+m2()
