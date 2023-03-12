@@ -8,7 +8,7 @@ import numpy as np
 # import colorsys
 # fmt: on
 
-CAMERANUMBER = 1
+CAMERANUMBER = 0
 TRACKBAR1 = 146
 TRACKBAR2 = 112
 AREA = 2400
@@ -46,7 +46,7 @@ def getPos():
 
 def crop(img):
     width, height = 600, 600
-    pts1 = np.float32([[52, 11], [592, 59], [32, 461], [561, 479]])
+    pts1 = np.float32([[40, 7], [593, 49], [30, 453], [558, 469]])
     pts2 = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
     matrix = cv2.getPerspectiveTransform(pts1, pts2)
     output = cv2.warpPerspective(img, matrix, (width, height))
@@ -154,7 +154,7 @@ def getImageCoordinates():
     imgBlur = cv2.GaussianBlur(img, (7, 7), 3)
     hsv_img = cv2.cvtColor(imgBlur, cv2.COLOR_BGR2HSV)
     blackMask = cv2.inRange(hsv_img, (0, 0, 0), (164, 135, 108))
-    redMask = cv2.inRange(hsv_img, (167, 69, 0), (180, 255, 255))
+    redMask = cv2.inRange(hsv_img, (0, 110, 0), (180, 255, 255))
     blueMask = cv2.inRange(hsv_img, (95, 105, 72), (103, 253, 200))
     bitwise1 = cv2.bitwise_or(blackMask, redMask)
     bitwise2 = cv2.bitwise_or(bitwise1,  blueMask)
