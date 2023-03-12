@@ -1,6 +1,6 @@
 # CORTEX
 
-**This main branch is under restructuring right now. Please download the qt branch to test the program**
+**This master branch is being restructured right now. Please download the qt branch to test the program**
 
 ## Introduction
 
