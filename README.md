@@ -1,5 +1,7 @@
 # CORTEX
 
+_This branch is the old version of the project with Tkinter GUI and procedural code_
+
 ## Introduction
 
 **CORTEX** is a robotic arm controller software that is capable of controlling any 3DOF robotic arms.
