@@ -8,7 +8,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('cortex.ico', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
