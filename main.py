@@ -1,31 +1,30 @@
-from PyQt5 import QtWidgets, QtGui
 import sys
-import os
 
-basedir = os.path.dirname(__file__)
-
-try:
-    from ctypes import windll  # Only exists on Windows.
-    myappid = 'mycompany.myproduct.subproduct.version'
-    windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-except ImportError:
-    pass
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtWidgets import (QMainWindow, QApplication, QLabel, QCheckBox)
+from PyQt5.QtGui import QPixmap
 
 
-class MainWindow(QtWidgets.QMainWindow):
-
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.setWindowTitle("Yo")
 
-        self.setWindowTitle("Hello World")
-        l = QtWidgets.QLabel("My simple app.")
-        l.setMargin(10)
-        self.setCentralWidget(l)
-        self.show()
+        self.setMinimumSize(QSize(200, 200))
+
+        cbox = QCheckBox()
+
+        cbox.setCheckState(Qt.Checked)
+
+        cbox.stateChanged.connect(self.show_state)
+        self.setCentralWidget(cbox)
+
+    def show_state(self, s):
+        print(s)
+        print(Qt.Checked)
 
 
-if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-    app.setWindowIcon(QtGui.QIcon(os.path.join(basedir, 'cortex.ico')))
-    w = MainWindow()
-    app.exec()
+app = QApplication(sys.argv)
+window = MainWindow()
+window.show()
+app.exec()
