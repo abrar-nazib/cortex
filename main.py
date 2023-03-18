@@ -1,10 +1,18 @@
 import sys
 
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
-    QMainWindow, QApplication, QSlider, QDial, QWidget, QVBoxLayout, QHBoxLayout
+    QApplication,
+    QHBoxLayout,
+    QLabel,
+    QMainWindow,
+    QPushButton,
+    QStackedLayout,
+    QVBoxLayout,
+    QWidget,
+    QTabWidget
 )
-from PyQt5.QtGui import QPixmap, QPalette, QColor
+from PyQt5.QtGui import QPalette, QColor
 
 
 class Color(QWidget):
@@ -18,10 +26,23 @@ class Color(QWidget):
 
 class MainWindow(QMainWindow):
     def __init__(self):
-        super(MainWindow, self).__init__()
+        super().__init__()
+
+        self.setWindowTitle("My App")
+        tabs = QTabWidget()
+        tabs.setTabPosition(QTabWidget.North)
+        tabs.setMovable(True)  # Can drag the tabs
+        # tabs.setDocumentMode(True)
+
+        for n, color in enumerate(["red", "blue", "green", "yellow"]):
+            tabs.addTab(Color(color), color)
+
+        self.setCentralWidget(tabs)
 
 
 app = QApplication(sys.argv)
+
 window = MainWindow()
 window.show()
+
 app.exec()
