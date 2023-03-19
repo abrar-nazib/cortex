@@ -1,0 +1,28 @@
+{
+    "Servo":{
+        "1":{
+            "min": 0.0,
+            "max" : 180.0,
+            "home": 90.0,
+            "correction": 0.0
+        },
+        "2":{
+            "min": 0.0,
+            "max": 180.0,
+            "home": 90.0,
+            "correction": 0.0
+        },
+        "3":{
+            "min": 0.0,
+            "max": 180.0,
+            "home": 90.0,
+            "correction": 0.0
+        },
+        "4":{
+            "min": 0.0,
+            "max": 180.0,
+            "home": 90.0,
+            "correction": 0.0
+        }
+    }
+}

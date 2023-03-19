@@ -1,8 +1,7 @@
 {
   "Dark": {
-    "link": "https://colorhunt.co/palette/404258474e6850577a6b728e",
-    "foreground": "#455A64",
-    "background": "#263238",
+    "foreground": "#263238",
+    "background": "#37474F",
     "toolbar": "#7B8FA1",
     "statusbar": "#6B728E",
     "icons": {
@@ -16,7 +15,6 @@
     }
   },
   "Light": {
-    "link": "https://colorhunt.co/palette/a7727deddbc7f8ead8f9f5e7",
     "window_background": "#F9F5E7"
   }
 }

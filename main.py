@@ -18,7 +18,9 @@ from PyQt5.QtWidgets import (
     QAction,
     QStatusBar,
     QDialog,
-    QDialogButtonBox
+    QDialogButtonBox,
+    QLineEdit,
+    QDoubleSpinBox,
 )
 from PyQt5.QtGui import QPalette, QColor, QIcon, QCursor
 
@@ -37,6 +39,60 @@ class VideoFeed(QWidget):
         pass
 
 
+class SettingsOption(QWidget):
+    def __init__(self, name: str, value: float):
+        super().__init__()
+        # Selecting the color
+        self.fgColor = CxConfManager.themeConf["Dark"]["toolbar"]
+        self.setAutoFillBackground(True)
+        palette = self.palette()
+        palette.setColor(QPalette.Window, QColor(self.fgColor))
+        self.setPalette(palette)
+
+        layout = QHBoxLayout()
+        label = QLabel(name)
+        input = QDoubleSpinBox()
+        input.setMinimumHeight(30)
+        input.setRange(-500, 500)
+        input.setSingleStep(0.1)
+        input.setValue(value)
+        layout.addWidget(label, 50)
+        layout.addWidget(input, 50)
+        self.setLayout(layout)
+
+
+class ServoSettings(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        # Selecting The Color
+        self.fgColor = CxConfManager.themeConf["Dark"]["toolbar"]
+        self.setAutoFillBackground(True)
+        palette = self.palette()
+        palette.setColor(QPalette.Window, QColor(self.fgColor))
+        self.setPalette(palette)
+        self.generateOptions()
+
+    def generateOptions(self):
+        layout = QVBoxLayout()
+
+        # layout.addWidget(SettingsOption("Servo1 Correction"))
+        # layout.addWidget(SettingsOption("Servo1 Min"))
+        # layout.addWidget(SettingsOption("Servo1 Max"))
+
+        # layout.addWidget(SettingsOption("Servo2 Home"))
+        # layout.addWidget(SettingsOption("Servo2 Correction"))
+        # layout.addWidget(SettingsOption("Servo2 Min"))
+        # layout.addWidget(SettingsOption("Servo2 Max"))
+        for confkey in CxConfManager.servoConf:
+            obj = CxConfManager.servoConf[confkey]
+            for key in obj:
+                print(f"Servo-{confkey} {key} {obj[key]}")
+                layout.addWidget(SettingsOption(
+                    f"Servo-{confkey} {key}", obj[key]))
+        self.setLayout(layout)
+
+
 class SettingsDialog(QDialog):
     # Using parent makes the dialog to get created inside parent's border
     def __init__(self, parent=None):
@@ -44,28 +100,30 @@ class SettingsDialog(QDialog):
 
         # Set window Title
         self.setWindowTitle("Settings")
+        self.setMinimumSize(QSize(500, 900))
 
         # Set Layout and Colors
         self.bgColor = CxConfManager.themeConf["Dark"]["background"]
-        self.fgColor = CxConfManager.themeConf["Dark"]["foreground"]
+        self.fgColor = CxConfManager.themeConf["Dark"]["toolbar"]
 
         self.layout = QVBoxLayout()
         self.setAutoFillBackground(True)
         palette = self.palette()
         palette.setColor(QPalette.Window, QColor(self.bgColor))
-        palette.setColor(QPalette.WindowText, QColor("white"))
+        # palette.setColor(QPalette.WindowText, QColor("white"))
         self.setPalette(palette)
 
         # Set a minimum window size
-        self.setMinimumSize(QSize(100, 200))
 
         # Set tab widget
         tabs = QTabWidget()
         tabs.setTabPosition(QTabWidget.North)
         tabs.setMovable(False)
-        tabs.addTab(ColoredWidget(self.fgColor), "Servo")
+        # tabs.addTab(ColoredWidget(self.fgColor), "Servo")
+        tabs.addTab(ServoSettings(), "Servo")
         tabs.addTab(ColoredWidget(self.fgColor), "Camera")
         tabs.addTab(ColoredWidget(self.fgColor), "Hardware")
+        tabs.setContentsMargins(0, 0, 0, 30)
         self.layout.addWidget(tabs)
 
         # Multiple set of dialogue box button by using "|"
@@ -73,10 +131,6 @@ class SettingsDialog(QDialog):
         self.buttonBox = QDialogButtonBox(QBtn)
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
-
-        message = QLabel("Something happened, is that OK?")
-        # message = CustomText("Something happened, is that OK?")
-        self.layout.addWidget(message)
         self.layout.addWidget(self.buttonBox)
         self.setLayout(self.layout)
 
