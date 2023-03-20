@@ -76,20 +76,12 @@ class ServoSettings(QWidget):
     def generateOptions(self):
         layout = QVBoxLayout()
 
-        # layout.addWidget(SettingsOption("Servo1 Correction"))
-        # layout.addWidget(SettingsOption("Servo1 Min"))
-        # layout.addWidget(SettingsOption("Servo1 Max"))
-
-        # layout.addWidget(SettingsOption("Servo2 Home"))
-        # layout.addWidget(SettingsOption("Servo2 Correction"))
-        # layout.addWidget(SettingsOption("Servo2 Min"))
-        # layout.addWidget(SettingsOption("Servo2 Max"))
         for confkey in CxConfManager.servoConf:
             obj = CxConfManager.servoConf[confkey]
             for key in obj:
-                print(f"Servo-{confkey} {key} {obj[key]}")
+                # print(f"Servo-{confkey} {key} {obj[key]}")
                 layout.addWidget(SettingsOption(
-                    f"Servo-{confkey} {key}", obj[key]))
+                    f"Servo-{confkey} {key.capitalize()}", obj[key]))
         self.setLayout(layout)
 
 
