@@ -21,9 +21,11 @@ for name in icons:
 def loadSettingsData():
     global settingsConf
     global servoConf
+    global cameraConf
     with open(SETTINGS_CONF_PATH, 'r') as sf:
         settingsConf = json.load(sf)
     servoConf = settingsConf["Servo"]
+    cameraConf = settingsConf["Camera"]
 
 
 loadSettingsData()

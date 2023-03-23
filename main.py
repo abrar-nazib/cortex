@@ -1,8 +1,10 @@
+# fmt: off
 import sys
 import os
 
-from cortex import CxConfManager
-
+from cortex import CxConfManager, CxObjectDetector
+import numpy as np
+import cv2
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtWidgets import (
     QApplication,
@@ -21,8 +23,10 @@ from PyQt5.QtWidgets import (
     QDialogButtonBox,
     QLineEdit,
     QDoubleSpinBox,
+
 )
-from PyQt5.QtGui import QPalette, QColor, QIcon, QCursor
+from PyQt5.QtGui import QPalette, QColor, QIcon, QCursor, QImage, QPixmap
+# fmt: on
 
 
 class ColoredWidget(QWidget):
@@ -34,9 +38,25 @@ class ColoredWidget(QWidget):
         self.setPalette(palette)
 
 
-class VideoFeed(QWidget):
+class VideoFeedPanel(QVBoxLayout):
     def __init__(self):
-        pass
+        super().__init__()
+        cameraWindow = QLabel()
+        cvFrame = CxObjectDetector.get_image()
+        qtFrame = self.convert_cv_qt(cvFrame)
+        cameraWindow.setPixmap(qtFrame)
+        self.addWidget(cameraWindow)
+
+    def convert_cv_qt(self, cv_img):
+        """Convert from an opencv image to QPixmap"""
+        rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
+        h, w, ch = rgb_image.shape
+        bytes_per_line = ch * w
+        convert_to_Qt_format = QImage(
+            rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
+        p = convert_to_Qt_format.scaled(
+            self.disply_width, self.display_height, Qt.KeepAspectRatio)
+        return QPixmap.fromImage(p)
 
 
 class SettingsOption(QWidget):
@@ -132,7 +152,7 @@ class SettingsDialog(QDialog):
 
 
 class WindowLayout(QWidget):
-    """Window for manual control of the robot
+    """Main Window Layout Design
 
     Args:
         QWidget (_type_): Modifies Qwidget
@@ -164,9 +184,6 @@ class WindowLayout(QWidget):
         # Cam Layout Organization
         camwidget = ColoredWidget(self.foregroundColor)
         camwidget.setCursor(Qt.PointingHandCursor)
-
-        camLayout.addWidget(camwidget, 75)
-        camLayout.addWidget(ColoredWidget(self.foregroundColor), 25)
 
         # Option Layout Organization
         optionsLayout.addWidget(ColoredWidget(self.foregroundColor), 70)
