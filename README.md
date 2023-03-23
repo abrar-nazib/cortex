@@ -36,10 +36,10 @@ Install the required packages
 pip install -r requirements.txt
 ```
 
-navigate to the `src` directory and run `software.py`
+Now to run the program, run
 
 ```
-python software.py
+python main.py
 ```
 
 ## Documentation
