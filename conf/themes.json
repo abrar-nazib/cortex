@@ -12,6 +12,9 @@
       "menu": "menu-bar.png",
       "settings": "settings.png",
       "edit": "edit.png"
+    },
+    "images": {
+      "camera-not-found": "camera_disconnected.png"
     }
   },
   "Light": {
