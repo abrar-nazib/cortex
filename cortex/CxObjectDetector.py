@@ -19,7 +19,7 @@ def connect_cam(cam_num):
 
 def get_image():
     ret, frame = cap.read()
-    frame = cv2.flip(frame, 1)
+    # frame = cv2.flip(frame, 1)
     return frame
 
 
