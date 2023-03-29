@@ -3,3 +3,4 @@ src/__pycache__/
 dist/
 build/
 logs/
+__pycache__/
