@@ -1,0 +1,92 @@
+{
+  "Theme": {
+    "Dark": {
+      "foreground": "#1e1e1e",
+      "background": "#2d2d30",
+      "toolbar": "#777777",
+      "statusbar": "#777777",
+      "icons": {
+        "window": "/home/abrar/cortex/cortex/../icons/cortex.ico",
+        "like": "/home/abrar/cortex/cortex/../icons/heart.png",
+        "themeswitch": "/home/abrar/cortex/cortex/../icons/dark-mode.png",
+        "home": "/home/abrar/cortex/cortex/../icons/home.png",
+        "menu": "/home/abrar/cortex/cortex/../icons/menu-bar.png",
+        "settings": "/home/abrar/cortex/cortex/../icons/settings.png",
+        "edit": "/home/abrar/cortex/cortex/../icons/edit.png"
+      },
+      "images": {
+        "camera_not_found": "/home/abrar/cortex/cortex/../images/camera_disconnected.png"
+      }
+    },
+    "Light": {
+      "foreground": "#263238",
+      "background": "#37474F",
+      "toolbar": "#7B8FA1",
+      "statusbar": "#6B728E",
+      "icons": {
+        "window": "/home/abrar/cortex/cortex/../icons/cortex.ico",
+        "like": "/home/abrar/cortex/cortex/../icons/heart.png",
+        "themeswitch": "/home/abrar/cortex/cortex/../icons/dark-mode.png",
+        "home": "/home/abrar/cortex/cortex/../icons/home.png",
+        "menu": "/home/abrar/cortex/cortex/../icons/menu-bar.png",
+        "settings": "/home/abrar/cortex/cortex/../icons/settings.png",
+        "edit": "/home/abrar/cortex/cortex/../icons/edit.png"
+      },
+      "images": {
+        "camera_not_found": "/home/abrar/cortex/cortex/../images/camera_disconnected.png"
+      }
+    }
+  },
+  "Servo": {
+    "servo1": {
+      "home": 90,
+      "min": 0,
+      "max": 180,
+      "limit_min": 0,
+      "limit_max": 180,
+      "correction": 0,
+      "offset": 0,
+      "pin": 10
+    },
+    "servo2": {
+      "home": 90,
+      "min": 0,
+      "max": 180,
+      "limit_min": 0,
+      "limit_max": 180,
+      "correction": 0,
+      "offset": 0,
+      "pin": 11
+    },
+    "servo3": {
+      "home": 90,
+      "min": 0,
+      "max": 180,
+      "limit_min": 0,
+      "limit_max": 180,
+      "correction": 0,
+      "offset": 0,
+      "pin": 12
+    },
+    "servo4": {
+      "home": 90,
+      "min": 0,
+      "max": 180,
+      "limit_min": 0,
+      "limit_max": 180,
+      "correction": 0,
+      "offset": 0,
+      "pin": 13
+    }
+  },
+  "Camera": {
+    "last-used": 2
+  },
+  "Hardware": {
+    "link1": 10.0,
+    "link2": 10.0,
+    "link3": 10.0,
+    "port": "/dev/ttyACM0",
+    "board": "arduino_uno"
+  }
+}

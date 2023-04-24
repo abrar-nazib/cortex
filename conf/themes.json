@@ -1,9 +1,9 @@
 {
   "Dark": {
-    "foreground": "#263238",
-    "background": "#37474F",
-    "toolbar": "#7B8FA1",
-    "statusbar": "#6B728E",
+    "foreground": "#1e1e1e",
+    "background": "#2d2d30",
+    "toolbar": "#777777",
+    "statusbar": "#777777",
     "icons": {
       "window": "cortex.ico",
       "like": "heart.png",
