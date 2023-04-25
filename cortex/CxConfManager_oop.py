@@ -57,15 +57,15 @@ class ThemeConfig:
 class HardwareConfig:
     def __init__(self, configDict: typing.Dict[str, typing.Any]):
         self.__dict__.update(configDict)
-        for elem in configDict:
-            setattr(self, elem, configDict[elem])
+        # for elem in configDict:
+        #     setattr(self, elem, configDict[elem])
 
 
 class CameraConfig:
     def __init__(self, configDict: typing.Dict[str, typing.Any]):
         self.__dict__.update(configDict)
-        for elem in configDict:
-            setattr(self, elem, configDict[elem])
+        # for elem in configDict:
+        #     setattr(self, elem, configDict[elem])
 
 
 class Servo:
