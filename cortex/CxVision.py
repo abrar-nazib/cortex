@@ -4,7 +4,7 @@ import numpy as np
 import time
 # import CxConfManager
 
-import CxConfManager
+from . import CxConfManager
 # fmt: on
 CAM_NUM = CxConfManager.cameraConf["last-used"]
 
