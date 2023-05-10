@@ -57,7 +57,8 @@ class VideoFeedPanel(QVBoxLayout):
         # Camera Number Selector box
         self.cameraSelectorLabel = QLabel("Select Camera: ")
         self.cameraSelectorBox = QComboBox()
-        self.cameraSelectorBox.addItems(['0', '1', '2', '3'])
+        self.cameraSelectorBox.addItems(
+            ['0', '1', '2', '3', '4', '5', '6', '7'])
         self.cameraSelectorBox.setCurrentIndex(
             CxConfManager.cameraConf['last-used'])
         self.cameraSelectorBox.currentIndexChanged.connect(
