@@ -514,21 +514,34 @@ class WritingPage(Page):
 
     def drawImage(self):
         self.clearCanvas()
-        servocontroller.guiControl(90, 150, 45, 180)
+        time.sleep(5)
+
+        # Bring the pen to the writing home position from home position
+        normal_home = [90, 210, 45]
+        drawing_home = [90, 150, 45]
+        servocontroller.stabilizeAngles(drawing_home, normal_home)
+
         time.sleep(0.5)
-        previousCoordinate = [0, 10]
+        previousCoordinate = [0, 5]
         for coordinate in self.imageCoordinates:
             self.create_circle(coordinate[0], coordinate[1], 1, self.canvas)
             self.container.update()
             coordX, coordY = self.container.pages[PickAndPlacePage].calculateActualPosition(
                 coordinate[0], coordinate[1]
             )
+            coordY = coordY + 2
 
             servocontroller.drawFromCoordinates(
                 [coordX, coordY], previousCoordinate)
             previousCoordinate = [coordX, coordY]
-            # print(f"{coordX} {coordY}")
-            # time.sleep(0.01)
+
+        # Return the pen to the home position
+        previousAngles = coordinateconverter.convertCoordstoAngles(
+            previousCoordinate)
+        servocontroller.stabilizeAngles(drawing_home, previousAngles)
+        print(f"Stabilizing from {previousAngles} to {drawing_home}")
+
+        # enable the angles
         self.liveDrawingButton["state"] = tk.NORMAL
         self.startDrawingButton["state"] = tk.DISABLED
 

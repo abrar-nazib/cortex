@@ -8,7 +8,7 @@ import numpy as np
 # import colorsys
 # fmt: on
 
-CAMERANUMBER = 1
+CAMERANUMBER = 0
 TRACKBAR1 = 146
 TRACKBAR2 = 112
 AREA = 2400
