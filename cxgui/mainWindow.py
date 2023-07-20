@@ -30,7 +30,7 @@ os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = os.fspath(
 )
 
 from cortex import CxConfManager
-from cxgui import guiCommons, videoPanel, simPanel, settingsPanel
+from cxgui import guiCommons, videoPanel, simPanel, settingsPanel, controllerPanel
 
 # fmt: on
 
@@ -56,28 +56,18 @@ class MainWindowLayout(QWidget):
         # Creating the layouts
         containerLayout = QHBoxLayout()
         camLayout = videoPanel.VideoFeedPanel()
-        simLayout = QVBoxLayout()
-        optionsLayout = QVBoxLayout()
+        simLayout = simPanel.SimulationPanel()
+        controllerLayout = controllerPanel.ControllerPanel()
 
         # Container layout Organization
-        containerLayout.addLayout(optionsLayout, 30)
+        containerLayout.addLayout(controllerLayout, 30)
         containerLayout.addLayout(camLayout, 35)
         containerLayout.addLayout(simLayout, 35)
         containerLayout.setSpacing(10)
         containerLayout.setContentsMargins(10, 10, 10, 10)
-        # Cam Layout Organization
-        # camwidget = ColoredWidget(self.foregroundColor)
-        # camwidget.setCursor(Qt.PointingHandCursor)
 
-        # Option Layout Organization
-        optionsLayout.addWidget(
-            guiCommons.ColoredWidget(self.foregroundColor), 70)
-        optionsLayout.addWidget(
-            guiCommons.ColoredWidget(self.foregroundColor), 20)
 
-        # Simulation Layout Organization
-        simLayout.addWidget(guiCommons.ColoredWidget(self.foregroundColor), 75)
-        simLayout.addWidget(guiCommons.ColoredWidget(self.foregroundColor), 25)
+        # Add the simulation layout
 
         # Assigning the created layout to the widget
         self.setLayout(containerLayout)
