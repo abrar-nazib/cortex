@@ -5,6 +5,7 @@
       "background": "#2d2d30",
       "toolbar": "#777777",
       "statusbar": "#777777",
+      "font_color": "#ffffff",
       "icons": {
         "window": "/home/abrar/cortex/cortex/../icons/cortex.ico",
         "like": "/home/abrar/cortex/cortex/../icons/heart.png",
