@@ -57,7 +57,7 @@ class MainWindowLayout(QWidget):
         containerLayout = QHBoxLayout()
         camLayout = videoPanel.VideoFeedPanel()
         simLayout = simPanel.SimulationPanel()
-        controllerLayout = controllerPanel.ControllerPanel()
+        controllerLayout = controllerPanel.ControllerPanel(simLayout)
 
         # Container layout Organization
         containerLayout.addLayout(controllerLayout, 30)

@@ -6,9 +6,10 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from cortex import CxConfManager
+from cortex import CxConfManager, CxKinematics
 
 # fmt: on
+
 
 class SimulationPanel(QVBoxLayout):
   def __init__(self):
@@ -37,24 +38,37 @@ class Matplotlib3DWidget(QWidget):
         self.plot_3d()
 
 
-    def plot_3d(self):
+    def plot_3d(self, frame=None, azim=-60, elev=30):
         fig = self.canvas.figure
-        ax = fig.add_subplot(111, projection='3d')
+        self.ax = fig.add_subplot(111, projection='3d')
+        self.ax.set_facecolor(CxConfManager.themeConf["Dark"]["foreground"])
+        self.ax.azim = azim
+        self.ax.elev = elev
         
-        # Set the background color
-        ax.set_facecolor(CxConfManager.themeConf["Dark"]["foreground"])
         
-
-        # Sample data for demonstration
-        x = np.linspace(-5, 5, 100)
-        y = np.linspace(-5, 5, 100)
-        X, Y = np.meshgrid(x, y)
-        Z = np.sin(np.sqrt(X ** 2 + Y ** 2))
-
-        ax.plot_surface(X, Y, Z, cmap='viridis')
-        ax.set_xlabel('X')
-        ax.set_ylabel('Y')
-        ax.set_zlabel('Z')
-        ax.set_title('Robotic Arm Simulation')
-
+        while(frame != None):
+        # Draw lines between the points
+            frame_pos, axis_x_pos, axis_y_pos, axis_z_pos = frame.get_positions()
+            self.ax.plot([frame_pos[0], axis_x_pos[0]], [frame_pos[1], axis_x_pos[1]], [frame_pos[2], axis_x_pos[2]], c='r', linewidth=3)
+            self.ax.plot([frame_pos[0], axis_y_pos[0]], [frame_pos[1], axis_y_pos[1]], [frame_pos[2], axis_y_pos[2]], c='b', linewidth=3)
+            self.ax.plot([frame_pos[0], axis_z_pos[0]], [frame_pos[1], axis_z_pos[1]], [frame_pos[2], axis_z_pos[2]], c='g', linewidth=3)
+            frame = frame.get_child()
+        
+            # Set the axes limit
+        self.ax.set_xlim([-10, 10])
+        self.ax.set_ylim([-10, 10])
+        self.ax.set_zlim([0, 20])
+        
+        self.ax.set_xlabel('X Label')
+        self.ax.set_ylabel('Y Label')
+        self.ax.set_zlabel('Z Label')
+        
         self.canvas.draw()
+    
+    def update_plot(self, frame):
+        # Delete the previous plot
+        azim = self.ax.azim
+        elev = self.ax.elev
+        self.canvas.figure.clear() 
+        self.plot_3d(frame, azim, elev)
+        
