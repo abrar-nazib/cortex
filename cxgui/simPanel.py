@@ -38,26 +38,35 @@ class Matplotlib3DWidget(QWidget):
         self.plot_3d()
 
 
-    def plot_3d(self, frame=None, azim=-60, elev=30):
+    def plot_3d(self, frame: CxKinematics.Frame=None, azim=-60, elev=30):
         fig = self.canvas.figure
         self.ax = fig.add_subplot(111, projection='3d')
         self.ax.set_facecolor(CxConfManager.themeConf["Dark"]["foreground"])
         self.ax.azim = azim
         self.ax.elev = elev
         
-        
+        frame_positions = []
         while(frame != None):
         # Draw lines between the points
             frame_pos, axis_x_pos, axis_y_pos, axis_z_pos = frame.get_positions()
+            frame_positions.append(frame_pos)
             self.ax.plot([frame_pos[0], axis_x_pos[0]], [frame_pos[1], axis_x_pos[1]], [frame_pos[2], axis_x_pos[2]], c='r', linewidth=3)
             self.ax.plot([frame_pos[0], axis_y_pos[0]], [frame_pos[1], axis_y_pos[1]], [frame_pos[2], axis_y_pos[2]], c='b', linewidth=3)
             self.ax.plot([frame_pos[0], axis_z_pos[0]], [frame_pos[1], axis_z_pos[1]], [frame_pos[2], axis_z_pos[2]], c='g', linewidth=3)
             frame = frame.get_child()
         
+        x_arr = []
+        y_arr = []
+        z_arr = []
+        for position in frame_positions:
+            x_arr.append(position[0])
+            y_arr.append(position[1])
+            z_arr.append(position[2])
+        self.ax.plot(x_arr, y_arr, z_arr, c='y', linewidth=5)
             # Set the axes limit
-        self.ax.set_xlim([-10, 10])
-        self.ax.set_ylim([-10, 10])
-        self.ax.set_zlim([0, 20])
+        self.ax.set_xlim([-15, 15])
+        self.ax.set_ylim([-15, 15])
+        self.ax.set_zlim([0, 25])
         
         self.ax.set_xlabel('X Label')
         self.ax.set_ylabel('Y Label')
@@ -65,7 +74,7 @@ class Matplotlib3DWidget(QWidget):
         
         self.canvas.draw()
     
-    def update_plot(self, frame):
+    def update_plot(self, frame: CxKinematics.Frame):
         # Delete the previous plot
         azim = self.ax.azim
         elev = self.ax.elev

@@ -2,7 +2,7 @@
 from pathlib import Path
 import sys
 import os
-
+import threading
 
 # For removing import error
 fpath = os.path.join(os.path.dirname(__file__), '..')
@@ -72,12 +72,31 @@ class VideoFeedPanel(QVBoxLayout):
         # Add widgets to the main layout
         self.addWidget(self.cameraFeedWindow, 70)
         self.addWidget(self.cameraInfoWidget, 30)
+        
+        # Create a separate thread for video feed capturing
+        self.video_thread = threading.Thread(target=self.capture_video_feed)
+        self.video_thread.daemon = True  # Daemonize the thread to automatically terminate it when the program exits
+        self.video_thread.start()        
 
-        # Setting camera recurring camera feed capture
-        self.timer = QTimer()
-        self.timer.setInterval(10)
-        self.timer.timeout.connect(self.getImage)
-        self.timer.start()
+    def capture_video_feed(self):
+        while True:
+            self.display_width = self.cameraFeedWindow.frameGeometry().width()
+            self.display_height = self.cameraFeedWindow.frameGeometry().height()
+
+            try:
+                cvFrame = CxVision.get_image()
+                qtFrame = self.convert_cv_qt(cvFrame)
+                self.update_camera_feed(qtFrame)
+            except:
+                cvFrame = self.cameraNotConnectedImg
+                qtFrame = self.convert_cv_qt(cvFrame)
+                self.update_camera_feed(qtFrame)
+
+    def update_camera_feed(self, qt_frame):
+        # This method will be called from the video capturing thread
+        # Use a thread-safe way to update the GUI element
+        self.cameraFeedWindow.setPixmap(qt_frame)
+
 
     def getImage(self):
         self.display_width = self.cameraFeedWindow.frameGeometry().width()

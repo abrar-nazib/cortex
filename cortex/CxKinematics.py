@@ -123,7 +123,7 @@ class Frame:
         
         self.set_axes()
         self.x_angle += theta
-        # self.update_children()
+        self.update_children()
 
 
     def rotate_y(self, theta):
@@ -135,11 +135,18 @@ class Frame:
             ])
         self.homogeneousMatrix = np.matmul(rotationHomogenousMatrix, self.homogeneousMatrix)
         
-        self.update_global_matrix()
-        
+        self.homogeneousMatrix = np.matmul(self.homogeneousMatrix, rotationHomogenousMatrix)
+        if(self.parent != None):
+            elevationMatrix = np.matmul(self.parent.homogeneousMatrix_global, self.position_matrix)
+            rotatedMatrix = np.matmul(elevationMatrix, self.homogeneousMatrix)
+            self.homogeneousMatrix_global = np.copy(rotatedMatrix)
+        else:
+            self.homogeneousMatrix_global = np.matmul(self.homogeneousMatrix_global, rotationHomogenousMatrix)
+
+
         self.set_axes()
         self.y_angle += theta
-        # self.update_children()
+        self.update_children()
     
     def rotate_z(self, theta):
         rotationHomogenousMatrix = np.array([
@@ -161,10 +168,20 @@ class Frame:
         self.update_children()
 
     def update_global_matrix(self):
+        rotationHomogenousMatrix = np.array([
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1]
+        ])
+        self.homogeneousMatrix = np.matmul(self.homogeneousMatrix, rotationHomogenousMatrix)
         if(self.parent != None):
-            pass
+            elevationMatrix = np.matmul(self.parent.homogeneousMatrix_global, self.position_matrix)
+            rotatedMatrix = np.matmul(elevationMatrix, self.homogeneousMatrix)
+            self.homogeneousMatrix_global = np.copy(rotatedMatrix)
         else:
-            self.homogeneousMatrix_global = np.copy(self.homogeneousMatrix)
+            self.homogeneousMatrix_global = np.matmul(self.homogeneousMatrix_global, rotationHomogenousMatrix)
+        self.set_axes()
 
 
     def set_axes(self):
@@ -179,7 +196,7 @@ class Frame:
     def update_children(self):
         if(self.child != None):
             self.child.update_global_matrix()
-            # self.child.update_children()
+            self.child.update_children()
         return
     
     def print_all(self):
