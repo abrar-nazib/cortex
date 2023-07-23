@@ -62,7 +62,10 @@ class Matplotlib3DWidget(QWidget):
             x_arr.append(position[0])
             y_arr.append(position[1])
             z_arr.append(position[2])
-        self.ax.plot(x_arr, y_arr, z_arr, c='y', linewidth=5)
+        self.ax.plot(x_arr[:2], y_arr[:2], z_arr[:2], c='#5BB318', linewidth=25)
+        self.ax.plot(x_arr[1:3], y_arr[1:3], z_arr[1:3], c='#7DCE13', linewidth=20)
+        self.ax.plot(x_arr[2:4], y_arr[2:4], z_arr[2:4], c='#7DCE13', linewidth=15)
+        self.ax.plot(x_arr[3:], y_arr[3:], z_arr[3:], c='#EAE509', linewidth=8)
             # Set the axes limit
         self.ax.set_xlim([-15, 15])
         self.ax.set_ylim([-15, 15])

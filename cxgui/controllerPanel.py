@@ -32,7 +32,7 @@ class ControllerPanel(QVBoxLayout):
     self.slider1 = SliderElement("Joint 1", -180, 180, 60, frame1)
     self.slider2 = SliderElement("Joint 2", -180, 180, -60, frame2)
     self.slider3 = SliderElement("Joint 3", -180, 180, 120, frame3)
-    self.slider4 = SliderElement("Joint 4", -180, 180, 60, frame4)
+    self.slider4 = SliderElement("Joint 4", -180, 180, 0, frame4)
     self.slider5 = SliderElement("Joint 5", -180, 180, -40, frame5)
     self.slider6 = SliderElement("Joint 6", -180, 180, 90, frame6)
     
@@ -78,14 +78,14 @@ class SliderWidget(QSlider):
     self.setValue(value)
     self.setTickInterval(1)
     self.valueChanged.connect(self.valueChangedHandler)
-    if(self.name == "Joint 1" or self.name == "Joint 6"):
+    if(self.name == "Joint 1" or self.name == "Joint 6" or self.name == "Joint 4"):
       self.frame.set_z_angle(value)
     else:
       self.frame.set_x_angle(value)
   
   def valueChangedHandler(self, value: float):
     self.parent.valueLabel.setText(str(value))
-    if(self.name == "Joint 1" or self.name == "Joint 6"):
+    if(self.name == "Joint 1" or self.name == "Joint 6" or self.name == "Joint 4"):
       self.frame.set_z_angle(value)
     else:
       self.frame.set_x_angle(value)

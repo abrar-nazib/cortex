@@ -145,7 +145,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.titleIcon = QIcon(CxConfManager.icons["window"])
-        self.setWindowTitle("CORTEX - 3DOF Robotic Arm Controller")
+        self.setWindowTitle("CORTEX - Robotic Arm Controller")
         self.setWindowIcon(self.titleIcon)
 
         # Handling the toolbar
