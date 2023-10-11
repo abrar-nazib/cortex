@@ -39,7 +39,7 @@ def cvtImage(cv2image):
 class GUI(tk.Tk):
     def __init__(self):
         super().__init__()  # Initiating Super Method
-        self.state("zoomed")
+        # self.state("zoomed")
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
         self.title("CORTEX")

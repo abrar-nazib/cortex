@@ -1,46 +1,44 @@
 import math
-import matplotlib.pyplot as plt
 import numpy as np
-from typing import List
-import time
+import matplotlib.pyplot as plt
 
 np.set_printoptions(precision=3, suppress=True)
 
-baseArmLength = 6.8
-shoulderArmLength = 10.4
-elbowArmLength = 15.7
+BASE_ARM_LENGTH = 6.7
+SHOULDER_ARM_LENGTH = 10.3
+ELBOW_ARM_LENGTH = 14.3
 
 
-def convertCoordstoAngles(coordinate, Origin=[0, 0]):
-    distanceFromOrigin = math.dist(coordinate, Origin)
+def convertCoordstoAngles(coordinate, origin=[0, 0]):
+    distance_from_origin = math.dist(coordinate, origin)
     # print(int(distanceFromOrigin/30))
-    servo1Angle = math.degrees(
-        math.acos((coordinate[0]-Origin[0])/distanceFromOrigin))
+    servo_angle_1 = math.degrees(
+        math.acos((coordinate[0]-origin[0])/distance_from_origin))
 
     hypotenuse = math.sqrt(
-        distanceFromOrigin*distanceFromOrigin + baseArmLength * baseArmLength)
+        distance_from_origin*distance_from_origin + BASE_ARM_LENGTH * BASE_ARM_LENGTH)
     # print(hypotenuse)
-    helperTheta1 = math.degrees(math.acos(baseArmLength / hypotenuse))
+    helper_theta_1 = math.degrees(math.acos(BASE_ARM_LENGTH / hypotenuse))
 
-    nominator = (hypotenuse*hypotenuse) + (shoulderArmLength *
-                                           shoulderArmLength) - (elbowArmLength * elbowArmLength)
-    denominator = 2 * hypotenuse * shoulderArmLength
+    nominator = (hypotenuse*hypotenuse) + (SHOULDER_ARM_LENGTH *
+                                           SHOULDER_ARM_LENGTH) - (ELBOW_ARM_LENGTH * ELBOW_ARM_LENGTH)
+    denominator = 2 * hypotenuse * SHOULDER_ARM_LENGTH
 
-    helperTheta2 = math.degrees(math.acos(
+    helper_theta_2 = math.degrees(math.acos(
         nominator/denominator
     ))
     # dunno why had to be minused from 180
-    servo2Angle = (helperTheta1 + helperTheta2)
-    nominator_2 = (elbowArmLength * elbowArmLength) + (shoulderArmLength *
-                                                       shoulderArmLength) - (hypotenuse * hypotenuse)
-    denominator_2 = 2 * elbowArmLength * shoulderArmLength
+    servo_angle_2 = (helper_theta_1 + helper_theta_2)
+    nominator_2 = (ELBOW_ARM_LENGTH * ELBOW_ARM_LENGTH) + (SHOULDER_ARM_LENGTH *
+                                                       SHOULDER_ARM_LENGTH) - (hypotenuse * hypotenuse)
+    denominator_2 = 2 * ELBOW_ARM_LENGTH * SHOULDER_ARM_LENGTH
 
-    servo3Angle = math.degrees(math.acos(
+    servo_angle_3 = math.degrees(math.acos(
         nominator_2/denominator_2
     ))
-    servoAngles = [servo1Angle, servo2Angle, servo3Angle]
+    servo_angles = [servo_angle_1, servo_angle_2, servo_angle_3]
     # print(helperTheta1)
-    return servoAngles
+    return servo_angles
 
 
 
@@ -52,9 +50,9 @@ def d(angle: float):
 class Frame:
     def __init__(self,parent=None, relative_position=[0,0,0]):
         self.parent = parent
-        if(parent != None):
+        if(parent is not None):
             self.parent.child = self
-        self.homogeneousMatrix = np.array([
+        self.homogeneous_matrix = np.array([
             [1, 0, 0, 0],
             [0, 1, 0, 0],
             [0, 0, 1, 0],
@@ -68,27 +66,27 @@ class Frame:
         ])
             
         if(parent != None):
-            self.homogeneousMatrix_global = np.matmul(np.matmul(self.homogeneousMatrix, self.position_matrix), self.parent.homogeneousMatrix_global)
+            self.homogeneousMatrix_global = np.matmul(np.matmul(self.homogeneous_matrix, self.position_matrix), self.parent.homogeneousMatrix_global)
             # print(self.homogeneousMatrix_global)
         else:
-            self.homogeneousMatrix_global = np.copy(self.homogeneousMatrix)        
+            self.homogeneousMatrix_global = np.copy(self.homogeneous_matrix)        
         
         self.child = None
         
         
-        self.axis_x_init = np.copy(self.homogeneousMatrix)
+        self.axis_x_init = np.copy(self.homogeneous_matrix)
         self.axis_x_init[0, 3] = 2
         self.axis_x_init[1, 3] = 0
         self.axis_x_init[2, 3] = 0
         self.axis_x = np.copy(self.axis_x_init)
         
-        self.axis_y_init = np.copy(self.homogeneousMatrix)
+        self.axis_y_init = np.copy(self.homogeneous_matrix)
         self.axis_y_init[0, 3] = 0
         self.axis_y_init[1, 3] = 2
         self.axis_y_init[2, 3] = 0
         self.axis_y = np.copy(self.axis_y_init)
         
-        self.axis_z_init = np.copy(self.homogeneousMatrix)
+        self.axis_z_init = np.copy(self.homogeneous_matrix)
         self.axis_z_init[0, 3] = 0
         self.axis_z_init[1, 3] = 0
         self.axis_z_init[2, 3] = 2        
@@ -103,7 +101,7 @@ class Frame:
 
     
     def multiply(self, matrix):
-        self.homogeneousMatrix = np.matmul(matrix, self.homogeneousMatrix_init)
+        self.homogeneous_matrix = np.matmul(matrix, self.homogeneousMatrix_init)
         self.set_axes()
 
     def rotate_x(self, theta):
@@ -113,10 +111,10 @@ class Frame:
             [0, np.sin(d(theta)), np.cos(d(theta)), 0],
             [0, 0, 0, 1]
             ])
-        self.homogeneousMatrix = np.matmul(self.homogeneousMatrix, rotationHomogenousMatrix)
+        self.homogeneous_matrix = np.matmul(self.homogeneous_matrix, rotationHomogenousMatrix)
         if(self.parent != None):
             elevationMatrix = np.matmul(self.parent.homogeneousMatrix_global, self.position_matrix)
-            rotatedMatrix = np.matmul(elevationMatrix, self.homogeneousMatrix)
+            rotatedMatrix = np.matmul(elevationMatrix, self.homogeneous_matrix)
             self.homogeneousMatrix_global = np.copy(rotatedMatrix)
         else:
             self.homogeneousMatrix_global = np.matmul(self.homogeneousMatrix_global, rotationHomogenousMatrix)        
@@ -133,12 +131,12 @@ class Frame:
             [-np.sin(d(theta)), 0, np.cos(d(theta)), 0],
             [0, 0, 0, 1]
             ])
-        self.homogeneousMatrix = np.matmul(rotationHomogenousMatrix, self.homogeneousMatrix)
+        self.homogeneous_matrix = np.matmul(rotationHomogenousMatrix, self.homogeneous_matrix)
         
-        self.homogeneousMatrix = np.matmul(self.homogeneousMatrix, rotationHomogenousMatrix)
+        self.homogeneous_matrix = np.matmul(self.homogeneous_matrix, rotationHomogenousMatrix)
         if(self.parent != None):
             elevationMatrix = np.matmul(self.parent.homogeneousMatrix_global, self.position_matrix)
-            rotatedMatrix = np.matmul(elevationMatrix, self.homogeneousMatrix)
+            rotatedMatrix = np.matmul(elevationMatrix, self.homogeneous_matrix)
             self.homogeneousMatrix_global = np.copy(rotatedMatrix)
         else:
             self.homogeneousMatrix_global = np.matmul(self.homogeneousMatrix_global, rotationHomogenousMatrix)
@@ -155,10 +153,10 @@ class Frame:
             [0, 0, 1, 0],
             [0, 0, 0, 1]
         ])
-        self.homogeneousMatrix = np.matmul(self.homogeneousMatrix, rotationHomogenousMatrix)
+        self.homogeneous_matrix = np.matmul(self.homogeneous_matrix, rotationHomogenousMatrix)
         if(self.parent != None):
             elevationMatrix = np.matmul(self.parent.homogeneousMatrix_global, self.position_matrix)
-            rotatedMatrix = np.matmul(elevationMatrix, self.homogeneousMatrix)
+            rotatedMatrix = np.matmul(elevationMatrix, self.homogeneous_matrix)
             self.homogeneousMatrix_global = np.copy(rotatedMatrix)
         else:
             self.homogeneousMatrix_global = np.matmul(self.homogeneousMatrix_global, rotationHomogenousMatrix)
@@ -174,10 +172,10 @@ class Frame:
             [0, 0, 1, 0],
             [0, 0, 0, 1]
         ])
-        self.homogeneousMatrix = np.matmul(self.homogeneousMatrix, rotationHomogenousMatrix)
+        self.homogeneous_matrix = np.matmul(self.homogeneous_matrix, rotationHomogenousMatrix)
         if(self.parent != None):
             elevationMatrix = np.matmul(self.parent.homogeneousMatrix_global, self.position_matrix)
-            rotatedMatrix = np.matmul(elevationMatrix, self.homogeneousMatrix)
+            rotatedMatrix = np.matmul(elevationMatrix, self.homogeneous_matrix)
             self.homogeneousMatrix_global = np.copy(rotatedMatrix)
         else:
             self.homogeneousMatrix_global = np.matmul(self.homogeneousMatrix_global, rotationHomogenousMatrix)
@@ -201,7 +199,7 @@ class Frame:
     
     def print_all(self):
         print("Homogeneous Matrix")
-        print(self.homogeneousMatrix)
+        print(self.homogeneous_matrix)
         
         print("Axis X")
         print(self.axis_x)

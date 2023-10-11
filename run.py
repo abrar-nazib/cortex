@@ -1,11 +1,11 @@
+import os
+import sys
 from cxgui import mainWindow
 from PyQt5.QtWidgets import QApplication
-import sys
-import os
 
 # for removing import error
 # fpath = os.path.join(os.path.dirname(__file__), '.')
-# sys.path.append(fpath)
+# sys.path.append(fpath
 
 app = QApplication(sys.argv)
 

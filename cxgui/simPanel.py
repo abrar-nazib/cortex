@@ -46,7 +46,7 @@ class Matplotlib3DWidget(QWidget):
         self.ax.elev = elev
         
         frame_positions = []
-        while(frame != None):
+        while(frame is not None):
         # Draw lines between the points
             frame_pos, axis_x_pos, axis_y_pos, axis_z_pos = frame.get_positions()
             frame_positions.append(frame_pos)
