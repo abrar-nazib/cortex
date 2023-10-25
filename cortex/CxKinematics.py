@@ -30,7 +30,7 @@ def convertCoordstoAngles(coordinate, origin=[0, 0]):
     # dunno why had to be minused from 180
     servo_angle_2 = (helper_theta_1 + helper_theta_2)
     nominator_2 = (ELBOW_ARM_LENGTH * ELBOW_ARM_LENGTH) + (SHOULDER_ARM_LENGTH *
-                                                       SHOULDER_ARM_LENGTH) - (hypotenuse * hypotenuse)
+                                                           SHOULDER_ARM_LENGTH) - (hypotenuse * hypotenuse)
     denominator_2 = 2 * ELBOW_ARM_LENGTH * SHOULDER_ARM_LENGTH
 
     servo_angle_3 = math.degrees(math.acos(
@@ -41,16 +41,14 @@ def convertCoordstoAngles(coordinate, origin=[0, 0]):
     return servo_angles
 
 
-
-
 def d(angle: float):
     return angle*np.pi/180
 
 
 class Frame:
-    def __init__(self,parent=None, relative_position=[0,0,0]):
+    def __init__(self, parent=None, relative_position=[0, 0, 0]):
         self.parent = parent
-        if(parent is not None):
+        if (parent is not None):
             self.parent.child = self
         self.homogeneous_matrix = np.array([
             [1, 0, 0, 0],
@@ -60,48 +58,47 @@ class Frame:
         ])
         self.position_matrix = np.array([
             [1, 0, 0, relative_position[0]],
-            [0, 1, 0, relative_position[1]] ,
+            [0, 1, 0, relative_position[1]],
             [0, 0, 1, relative_position[2]],
             [0, 0, 0, 1]
         ])
-            
-        if(parent != None):
-            self.homogeneousMatrix_global = np.matmul(np.matmul(self.homogeneous_matrix, self.position_matrix), self.parent.homogeneousMatrix_global)
+
+        if (parent != None):
+            self.homogeneousMatrix_global = np.matmul(np.matmul(
+                self.homogeneous_matrix, self.position_matrix), self.parent.homogeneousMatrix_global)
             # print(self.homogeneousMatrix_global)
         else:
-            self.homogeneousMatrix_global = np.copy(self.homogeneous_matrix)        
-        
+            self.homogeneousMatrix_global = np.copy(self.homogeneous_matrix)
+
         self.child = None
-        
-        
+
         self.axis_x_init = np.copy(self.homogeneous_matrix)
         self.axis_x_init[0, 3] = 2
         self.axis_x_init[1, 3] = 0
         self.axis_x_init[2, 3] = 0
         self.axis_x = np.copy(self.axis_x_init)
-        
+
         self.axis_y_init = np.copy(self.homogeneous_matrix)
         self.axis_y_init[0, 3] = 0
         self.axis_y_init[1, 3] = 2
         self.axis_y_init[2, 3] = 0
         self.axis_y = np.copy(self.axis_y_init)
-        
+
         self.axis_z_init = np.copy(self.homogeneous_matrix)
         self.axis_z_init[0, 3] = 0
         self.axis_z_init[1, 3] = 0
-        self.axis_z_init[2, 3] = 2        
+        self.axis_z_init[2, 3] = 2
         self.axis_z = np.copy(self.axis_z_init)
-        
+
         self.set_axes()
-        
+
         self.x_angle = 0
         self.y_angle = 0
         self.z_angle = 0
-        
 
-    
     def multiply(self, matrix):
-        self.homogeneous_matrix = np.matmul(matrix, self.homogeneousMatrix_init)
+        self.homogeneous_matrix = np.matmul(
+            matrix, self.homogeneousMatrix_init)
         self.set_axes()
 
     def rotate_x(self, theta):
@@ -110,19 +107,21 @@ class Frame:
             [0, np.cos(d(theta)), -np.sin(d(theta)), 0],
             [0, np.sin(d(theta)), np.cos(d(theta)), 0],
             [0, 0, 0, 1]
-            ])
-        self.homogeneous_matrix = np.matmul(self.homogeneous_matrix, rotationHomogenousMatrix)
-        if(self.parent != None):
-            elevationMatrix = np.matmul(self.parent.homogeneousMatrix_global, self.position_matrix)
+        ])
+        self.homogeneous_matrix = np.matmul(
+            self.homogeneous_matrix, rotationHomogenousMatrix)
+        if (self.parent != None):
+            elevationMatrix = np.matmul(
+                self.parent.homogeneousMatrix_global, self.position_matrix)
             rotatedMatrix = np.matmul(elevationMatrix, self.homogeneous_matrix)
             self.homogeneousMatrix_global = np.copy(rotatedMatrix)
         else:
-            self.homogeneousMatrix_global = np.matmul(self.homogeneousMatrix_global, rotationHomogenousMatrix)        
-        
+            self.homogeneousMatrix_global = np.matmul(
+                self.homogeneousMatrix_global, rotationHomogenousMatrix)
+
         self.set_axes()
         self.x_angle += theta
         self.update_children()
-
 
     def rotate_y(self, theta):
         rotationHomogenousMatrix = np.array([
@@ -130,22 +129,25 @@ class Frame:
             [0, 1, 0, 0],
             [-np.sin(d(theta)), 0, np.cos(d(theta)), 0],
             [0, 0, 0, 1]
-            ])
-        self.homogeneous_matrix = np.matmul(rotationHomogenousMatrix, self.homogeneous_matrix)
-        
-        self.homogeneous_matrix = np.matmul(self.homogeneous_matrix, rotationHomogenousMatrix)
-        if(self.parent != None):
-            elevationMatrix = np.matmul(self.parent.homogeneousMatrix_global, self.position_matrix)
+        ])
+        self.homogeneous_matrix = np.matmul(
+            rotationHomogenousMatrix, self.homogeneous_matrix)
+
+        self.homogeneous_matrix = np.matmul(
+            self.homogeneous_matrix, rotationHomogenousMatrix)
+        if (self.parent != None):
+            elevationMatrix = np.matmul(
+                self.parent.homogeneousMatrix_global, self.position_matrix)
             rotatedMatrix = np.matmul(elevationMatrix, self.homogeneous_matrix)
             self.homogeneousMatrix_global = np.copy(rotatedMatrix)
         else:
-            self.homogeneousMatrix_global = np.matmul(self.homogeneousMatrix_global, rotationHomogenousMatrix)
-
+            self.homogeneousMatrix_global = np.matmul(
+                self.homogeneousMatrix_global, rotationHomogenousMatrix)
 
         self.set_axes()
         self.y_angle += theta
         self.update_children()
-    
+
     def rotate_z(self, theta):
         rotationHomogenousMatrix = np.array([
             [np.cos(d(theta)), -np.sin(d(theta)), 0, 0],
@@ -153,14 +155,17 @@ class Frame:
             [0, 0, 1, 0],
             [0, 0, 0, 1]
         ])
-        self.homogeneous_matrix = np.matmul(self.homogeneous_matrix, rotationHomogenousMatrix)
-        if(self.parent != None):
-            elevationMatrix = np.matmul(self.parent.homogeneousMatrix_global, self.position_matrix)
+        self.homogeneous_matrix = np.matmul(
+            self.homogeneous_matrix, rotationHomogenousMatrix)
+        if (self.parent != None):
+            elevationMatrix = np.matmul(
+                self.parent.homogeneousMatrix_global, self.position_matrix)
             rotatedMatrix = np.matmul(elevationMatrix, self.homogeneous_matrix)
             self.homogeneousMatrix_global = np.copy(rotatedMatrix)
         else:
-            self.homogeneousMatrix_global = np.matmul(self.homogeneousMatrix_global, rotationHomogenousMatrix)
-            
+            self.homogeneousMatrix_global = np.matmul(
+                self.homogeneousMatrix_global, rotationHomogenousMatrix)
+
         self.set_axes()
         self.z_angle += theta
         self.update_children()
@@ -172,77 +177,97 @@ class Frame:
             [0, 0, 1, 0],
             [0, 0, 0, 1]
         ])
-        self.homogeneous_matrix = np.matmul(self.homogeneous_matrix, rotationHomogenousMatrix)
-        if(self.parent != None):
-            elevationMatrix = np.matmul(self.parent.homogeneousMatrix_global, self.position_matrix)
+        self.homogeneous_matrix = np.matmul(
+            self.homogeneous_matrix, rotationHomogenousMatrix)
+        if (self.parent != None):
+            elevationMatrix = np.matmul(
+                self.parent.homogeneousMatrix_global, self.position_matrix)
             rotatedMatrix = np.matmul(elevationMatrix, self.homogeneous_matrix)
             self.homogeneousMatrix_global = np.copy(rotatedMatrix)
         else:
-            self.homogeneousMatrix_global = np.matmul(self.homogeneousMatrix_global, rotationHomogenousMatrix)
+            self.homogeneousMatrix_global = np.matmul(
+                self.homogeneousMatrix_global, rotationHomogenousMatrix)
         self.set_axes()
-
 
     def set_axes(self):
         # Set the axes accordingly as they depend on the frame
-        self.axis_x = np.matmul(self.homogeneousMatrix_global, self.axis_x_init)
-        self.axis_y = np.matmul(self.homogeneousMatrix_global, self.axis_y_init)
-        self.axis_z = np.matmul(self.homogeneousMatrix_global, self.axis_z_init)
-        
+        self.axis_x = np.matmul(
+            self.homogeneousMatrix_global, self.axis_x_init)
+        self.axis_y = np.matmul(
+            self.homogeneousMatrix_global, self.axis_y_init)
+        self.axis_z = np.matmul(
+            self.homogeneousMatrix_global, self.axis_z_init)
+
     def get_child(self):
         return self.child
-    
+
     def update_children(self):
-        if(self.child != None):
+        if (self.child != None):
             self.child.update_global_matrix()
             self.child.update_children()
         return
-    
+
     def print_all(self):
         print("Homogeneous Matrix")
         print(self.homogeneous_matrix)
-        
+
         print("Axis X")
         print(self.axis_x)
-        
+
         print("Axis Y")
         print(self.axis_y)
-        
+
         print("Axis Z")
         print(self.axis_z)
-    
+
     def get_positions(self):
         frame_pos = self.homogeneousMatrix_global[0:3, 3]
         axis_x_pos = self.axis_x[0:3, 3]
         axis_y_pos = self.axis_y[0:3, 3]
         axis_z_pos = self.axis_z[0:3, 3]
-        
+
         return (
             frame_pos,
             axis_x_pos,
             axis_y_pos,
             axis_z_pos
         )
-    
+
     def set_x_angle(self, angle):
         # Rotate the frame to the desired angle from previous angle
         self.rotate_x(angle - self.x_angle)
 
-    
     def set_y_angle(self, angle):
         # Rotate the frame to the desired angle from previous angle
         self.rotate_y(angle - self.y_angle)
-    
+
     def set_z_angle(self, angle):
         # Rotate the frame to the desired angle from previous angle
         self.rotate_z(angle - self.z_angle)
-           
 
-    
 
 class Arm:
-    def __init__():
-        pass
- 
+    def __init__(self, h1, h2, h3, h4, h5):
+        self.frames = []
+        self.frames.append(Frame())
+        self.frames.append(Frame(self.frames[0], [0, 0, h1]))
+        self.frames.append(Frame(self.frames[1], [0, 0, h2]))
+        self.frames.append(Frame(self.frames[2], [0, 0, h3]))
+        self.frames.append(Frame(self.frames[3], [0, 0, h4]))
+        self.frames.append(Frame(self.frames[4], [0, 0, h5]))
+
+    def get_positions(self):
+        positions = []
+        for frame in self.frames:
+            positions.append(frame.get_positions())
+        return positions
+
+    def set_angle(self, frame_number, angle):
+        self.frames[frame_number].set_z_angle(angle)
+
+
+robo_arm = Arm(5, 10, 10, 5, 5)
+
 if __name__ == "__main__":
     frame = Frame()
     for i in range(0, 90):
